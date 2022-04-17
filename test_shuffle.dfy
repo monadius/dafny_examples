@@ -34,7 +34,7 @@ lemma eqMultiset<T>(s1: seq<T>, s2: seq<T>)
 }
 
 method swap<T>(a: array<T>, i: int, j: int)
-	requires a != null
+	// requires a != null
 	requires 0 <= i < a.Length && 0 <= j < a.Length
 	modifies a
 	ensures a[i] == old(a[j])
@@ -47,9 +47,9 @@ method swap<T>(a: array<T>, i: int, j: int)
 	a[j] := t;
 }
 	
-method getAllShuffledDataEntries<T>(m_dataEntries: array<T>) returns (result: array<T>)
-	requires m_dataEntries != null
-	ensures result != null
+method getAllShuffledDataEntries<T(0)>(m_dataEntries: array<T>) returns (result: array<T>)
+	// requires m_dataEntries != null
+	// ensures result != null
 	ensures result.Length == m_dataEntries.Length
 	ensures multiset(result[..]) == multiset(m_dataEntries[..])
 {
@@ -88,7 +88,7 @@ lemma subset_set_of_seq<T>(s1: seq<T>, s2: seq<T>)
 	ensures forall x :: x in s1 ==> x in s2
 	
 method getRandomDataEntry<T(==)>(m_workList: array<T>, avoidSet: seq<T>) returns (e: T)
-	requires m_workList != null && m_workList.Length > 0
+	requires m_workList.Length > 0
 //	ensures set_of_seq(avoidSet) < set_of_seq(m_workList[..]) ==> e !in avoidSet
 //	ensures avoidSet < m_workList[..] ==> e in m_workList[..]
 {

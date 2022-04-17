@@ -1,4 +1,4 @@
-function count_eq<T(==)>(x: T, s: seq<T>): nat
+function count_eq<T>(x: T, s: seq<T>): nat
 {
 	if s == [] then
 		0
@@ -8,18 +8,18 @@ function count_eq<T(==)>(x: T, s: seq<T>): nat
 		count_eq(x, s[1..])
 }
 
-lemma count0<T(==)>(x: T, s: seq<T>)
+lemma count0<T>(x: T, s: seq<T>)
 	requires x !in s
 	ensures count_eq(x, s) == 0
 {
 }
 
-lemma count_in<T(==)>(x: T, s: seq<T>)
+lemma count_in<T>(x: T, s: seq<T>)
 	ensures 0 < count_eq(x, s) <==> x in s
 {
 }
 
-lemma count_multiset<T(==)>(x: T, s: seq<T>)
+lemma count_multiset<T>(x: T, s: seq<T>)
 	ensures count_eq(x, s) == multiset(s)[x]
 {
 	if s == [] {

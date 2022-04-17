@@ -2,7 +2,7 @@ method random(a: int, b: int) returns (r: int)
 	ensures a <= b ==> a <= r <= b
 
 method swap<T>(a: array<T>, i: int, j: int)
-	requires a != null
+	// requires a != null
 	requires 0 <= i < a.Length && 0 <= j < a.Length
 	modifies a
 	ensures a[i] == old(a[j])
@@ -15,7 +15,7 @@ method swap<T>(a: array<T>, i: int, j: int)
 	a[j] := t;
 }
 
-predicate uniq<T(==)>(s: seq<T>)
+predicate uniq<T>(s: seq<T>)
 {
 	forall x :: x in s ==> multiset(s)[x] == 1
 }
@@ -58,7 +58,7 @@ lemma suffix_multiset_subset<T>(s: seq<T>, k: int)
 
 method getRandomDataEntry<T(==)>(m_workList: array<T>, avoidSet: seq<T>) returns (e: T)
 	modifies m_workList
-	requires m_workList != null && m_workList.Length > 0
+	requires m_workList.Length > 0
 	requires uniq(m_workList[..])
 	requires |avoidSet| < m_workList.Length
 	ensures multiset(m_workList[..]) == old(multiset(m_workList[..]))
@@ -102,15 +102,15 @@ method getRandomDataEntry<T(==)>(m_workList: array<T>, avoidSet: seq<T>) returns
 	return m_workList[0];
 }
 
-method fillWithRandomDataEntries<T(==)>(m_workList: array<T>, n: int, avoidSet: seq<T>)
+method fillWithRandomDataEntries<T(==, 0)>(m_workList: array<T>, n: int, avoidSet: seq<T>)
 	returns (out: array<T>)
 	modifies m_workList
-	requires m_workList != null
+	// requires m_workList != null
 	requires uniq(m_workList[..])
 	requires |avoidSet| + n <= m_workList.Length;
 	requires n >= 0
 	ensures multiset(m_workList[..]) == old(multiset(m_workList[..]))
-	ensures out != null && out.Length == n;
+	ensures out.Length == n;
 	ensures forall x :: x in out[..] ==> x in m_workList[..] && x !in avoidSet
 	ensures uniq(out[..])
 {

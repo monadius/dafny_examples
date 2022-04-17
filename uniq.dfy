@@ -1,34 +1,34 @@
-predicate uniq_mult1<T(==)>(s: seq<T>)
+predicate uniq_mult1<T>(s: seq<T>)
 {
 	forall t :: t in s ==> multiset(s)[t] == 1
 }
 
-predicate uniq_mult2<T(==)>(s: seq<T>)
+predicate uniq_mult2<T>(s: seq<T>)
 {
-	forall t :: multiset(s)[t] <= 1
+	forall t :: t in s ==> multiset(s)[t] <= 1
 }
 
-predicate uniq_distinct<T(==)>(s: seq<T>)
+predicate uniq_distinct<T>(s: seq<T>)
 {
 	forall i, j :: 0 <= i < |s| && 0 <= j < |s| && i != j ==> s[i] != s[j]
 }
 
-predicate uniq_ind<T(==)>(s: seq<T>)
+predicate uniq_ind<T>(s: seq<T>)
 {
 	if s == [] then true else s[0] !in s[1..] && uniq_ind(s[1..])
 }
 
-lemma lemma1<T(==)>(s: seq<T>)
+lemma lemma1<T>(s: seq<T>)
 	ensures uniq_ind(s) <==> uniq_distinct(s)
 {
 }
 
-lemma lemma2<T(==)>(s: seq<T>)
+lemma lemma2<T>(s: seq<T>)
 	ensures uniq_mult1(s) <==> uniq_mult2(s)
 {
 }
 
-function count_eq<T(==)>(x: T, s: seq<T>): nat
+function count_eq<T>(x: T, s: seq<T>): nat
 {
 	if s == [] then
 		0
@@ -38,18 +38,18 @@ function count_eq<T(==)>(x: T, s: seq<T>): nat
 		count_eq(x, s[1..])
 }
 
-lemma count0<T(==)>(x: T, s: seq<T>)
+lemma count0<T>(x: T, s: seq<T>)
 	requires x !in s
 	ensures count_eq(x, s) == 0
 {
 }
 
-lemma count_in<T(==)>(x: T, s: seq<T>)
+lemma count_in<T>(x: T, s: seq<T>)
 	ensures 0 < count_eq(x, s) <==> x in s
 {
 }
 
-lemma uniq_count<T(==)>(x: T, s: seq<T>)
+lemma uniq_count<T>(x: T, s: seq<T>)
 	requires uniq_ind(s)
 	requires x in s
 	ensures count_eq(x, s) == 1
@@ -69,10 +69,11 @@ lemma uniq_count<T(==)>(x: T, s: seq<T>)
 	}
 }
 
-lemma count_append<T(==)>(x: T, s1: seq<T>, s2: seq<T>)
+lemma count_append<T>(x: T, s1: seq<T>, s2: seq<T>)
 	ensures count_eq(x, s1 + s2) == count_eq(x, s1) + count_eq(x, s2)
 {
 	if s1 == [] {
+		assert s1 + s2 == s2;
 	}
 	else {
 		calc {
@@ -83,7 +84,7 @@ lemma count_append<T(==)>(x: T, s1: seq<T>, s2: seq<T>)
 	}
 }
 
-lemma count1_uniq<T(==)>(s: seq<T>)
+lemma count1_uniq<T>(s: seq<T>)
 	requires forall x :: x in s ==> count_eq(x, s) == 1
 	ensures uniq_ind(s)
 {
@@ -105,7 +106,7 @@ lemma count1_uniq<T(==)>(s: seq<T>)
 	}
 }
 
-lemma in_uniq_append<T(==)>(x: T, s1: seq<T>, s2: seq<T>)
+lemma in_uniq_append<T>(x: T, s1: seq<T>, s2: seq<T>)
 	requires uniq_ind(s1 + s2)
 	ensures x in s1 ==> x !in s2
 	ensures x in s2 ==> x !in s1
@@ -135,7 +136,7 @@ lemma in_uniq_append<T(==)>(x: T, s1: seq<T>, s2: seq<T>)
 */
 }
 
-lemma uniq_sub_aux<T(==)>(x: T, s: seq<T>, a: int, b: int)
+lemma uniq_sub_aux<T>(x: T, s: seq<T>, a: int, b: int)
 	requires uniq_ind(s)
 	requires 0 <= a < b <= |s|
 	requires x in s[a..b]
@@ -174,7 +175,7 @@ lemma uniq_sub_aux<T(==)>(x: T, s: seq<T>, a: int, b: int)
 	}
 }
 
-lemma uniq_sub<T(==)>(s: seq<T>, a: int, b: int)
+lemma uniq_sub<T>(s: seq<T>, a: int, b: int)
 	requires uniq_ind(s)
 	requires 0 <= a < b <= |s|
 	ensures uniq_ind(s[a..b])
@@ -186,7 +187,7 @@ lemma uniq_sub<T(==)>(s: seq<T>, a: int, b: int)
 	count1_uniq(s[a..b]);
 }
 
-lemma count_multiset<T(==)>(x: T, s: seq<T>)
+lemma count_multiset<T>(x: T, s: seq<T>)
 	ensures count_eq(x, s) == multiset(s)[x]
 {
 	if s == [] {
@@ -204,7 +205,7 @@ lemma count_multiset<T(==)>(x: T, s: seq<T>)
 }
 
 
-lemma lemma3<T(==)>(s: seq<T>)
+lemma lemma3<T>(s: seq<T>)
 	ensures uniq_ind(s) <==> uniq_mult1(s)
 {
 	if uniq_ind(s) {
@@ -233,7 +234,7 @@ lemma lemma3<T(==)>(s: seq<T>)
 }
 
 
-lemma lemma_all<T(==)>(s: seq<T>)
+lemma lemma_all<T>(s: seq<T>)
 	ensures uniq_ind(s) == uniq_distinct(s) == uniq_mult1(s) == uniq_mult2(s)
 {
 //	lemma1(s);
@@ -241,7 +242,7 @@ lemma lemma_all<T(==)>(s: seq<T>)
 	lemma3(s);
 }
 
-lemma lemma4<T(==)>(s: seq<T>)
+lemma lemma4<T>(s: seq<T>)
 	ensures uniq_ind(s) <==> uniq_mult2(s)
 {
 	lemma_all(s);

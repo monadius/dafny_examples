@@ -24,7 +24,7 @@
 */
 
 module Vec {
-	class Vector<T> {
+	class Vector<T(0)> {
 		ghost var Contents: seq<T>;
 		ghost var Repr: set<object>;
 		
@@ -32,11 +32,10 @@ module Vec {
 		var capacity: int;
 		var length: int;
 			
-		protected predicate Valid()
+		predicate Valid()
 			reads this, objs
 		{
-			this in Repr && objs in Repr && null !in Repr &&
-				objs != null &&
+			this in Repr && objs in Repr && 
 				capacity == objs.Length &&
 				0 <= length <= capacity &&
 				1 <= capacity &&
@@ -44,13 +43,12 @@ module Vec {
 		}
 
 		constructor ()
-			modifies this
 			ensures Contents == []
 			ensures Valid()
 		{
 			capacity := 1;
 			length := 0;
-			objs := new T[capacity];
+			objs := new T[1];
 
 			Contents := [];
 			Repr := {this, objs};

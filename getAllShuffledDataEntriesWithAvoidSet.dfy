@@ -2,7 +2,7 @@ method random(a: int, b: int) returns (r: int)
 	ensures a <= b ==> a <= r <= b
 
 method swap<T>(a: array<T>, i: int, j: int)
-	requires a != null
+	// requires a != null
 	requires 0 <= i < a.Length && 0 <= j < a.Length
 	modifies a
 	ensures a[i] == old(a[j])
@@ -15,7 +15,7 @@ method swap<T>(a: array<T>, i: int, j: int)
 	a[j] := t;
 }
 
-predicate uniq<T(==)>(s: seq<T>)
+predicate uniq<T>(s: seq<T>)
 {
 	forall x :: x in s ==> multiset(s)[x] == 1
 }
@@ -48,12 +48,12 @@ lemma suffix_multiset_subset<T>(s: seq<T>, k: int)
 	assert s == s[..k] + s[k..];
 }
 
-method getAllShuffledDataEntriesWithAvoidSet<T(==)>(m_workList: array<T>, avoidSet: set<T>)
+method getAllShuffledDataEntriesWithAvoidSet<T(==, 0)>(m_workList: array<T>, avoidSet: set<T>)
 	returns (result: array<T>)
-	requires m_workList != null
+	// requires m_workList != null
 	requires uniq(m_workList[..])
 	requires m_workList.Length >= 2 * |avoidSet|
-	ensures result != null
+	// ensures result != null
 	ensures multiset(result[..]) == multiset(m_workList[..])
 	ensures result.Length == m_workList.Length
 	ensures uniq(result[..])
@@ -61,17 +61,21 @@ method getAllShuffledDataEntriesWithAvoidSet<T(==)>(m_workList: array<T>, avoidS
 {
 	result := new T[m_workList.Length];
 
+	ghost var tmp := m_workList[..];
+	assert uniq(tmp);
 	forall i | 0 <= i < m_workList.Length {
 		result[i] := m_workList[i];
 	}
 
 	assert result[..] == m_workList[..];
+	assert m_workList[..] == tmp;
+	assert uniq(m_workList[..]);
 
 	var n := |avoidSet|;
 	var j := 0;
 	var k := result.Length - 1;
 
-	while (j <= k)
+	while j <= k
 		decreases result.Length - j, k
 		invariant j <= k + 1
 		invariant -1 <= k < result.Length
@@ -127,5 +131,12 @@ method getAllShuffledDataEntriesWithAvoidSet<T(==)>(m_workList: array<T>, avoidS
 		}
 
 //		assert |avoidSet| <= j; // a contradiction with j + n == |avoidSet| && n > 0
+	} else {
+		// assume multiset(result[..]) == multiset(m_workList[..]);
+	// assume result.Length == m_workList.Length;
+	assert uniq(m_workList[..]);
+	// assume uniq(result[..]);
+	// assume forall i :: 0 <= i < |avoidSet| ==> result[i] !in avoidSet;
+
 	}
 }
