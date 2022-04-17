@@ -87,8 +87,10 @@ method MaxProfit2(prices: array<int>) returns (profit: int)
 
 method MaxProfit(prices: array<int>) returns (profit: int)
   requires 1 <= prices.Length
-  ensures forall i, j :: 0 <= i < prices.Length && i <= j < prices.Length ==> prices[j] - prices[i] <= profit
+  ensures profit >= 0
+  ensures forall i, j :: 0 <= i <= j < prices.Length ==> prices[j] - prices[i] <= profit
   ensures profit > 0 ==> exists i, j :: 0 <= i < prices.Length && i < j < prices.Length && profit == prices[j] - prices[i]
+  ensures profit == 0 <==> forall i, j :: 0 <= i <= j < prices.Length ==> prices[j] <= prices[i]
 {
   var low := prices[0];
   profit := 0;
