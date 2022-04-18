@@ -1,4 +1,4 @@
-function sqrt(x: int, r: int) : bool {
+predicate sqrt(x: int, r: int) {
     r*r <= x && (r+1)*(r+1) > x
 }
 
