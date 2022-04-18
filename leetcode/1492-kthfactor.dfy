@@ -8,26 +8,27 @@ method KthFactor(n: int, k: int) returns (r: int)
   ensures r > 0 <==> k <= |AllFactors(n)| && AllFactors(n)[k - 1] == r
 {
   ghost var factors := [];
-  var i := 1;
-  var cnt := k;
+  var d := 1;
+  var cnt := 0;
   r := -1;
   
-  while (i <= n)
-    invariant i <= n + 1
-    invariant factors == Factors(n, i - 1)
-    invariant k - cnt == |factors|
+  while d <= n
+    invariant d <= n + 1
+    invariant factors == Factors(n, d - 1)
+    invariant cnt == |factors|
+    invariant cnt < k
   {
-      if (n % i == 0) {
-          cnt := cnt - 1;
-          factors := factors + [i];
+      if (n % d == 0) {
+          cnt := cnt + 1;
+          factors := factors + [d];
+          if cnt == k {
+            r := d;
+            break;
+          }
       }
-      if (cnt == 0) {
-          r := i;
-          break;
-      }
-      i := i + 1;
+      d := d + 1;
   }
-  if i <= n {
-    FactorsPrefix(n, i, n);
+  if d <= n {
+    FactorsPrefix(n, d, n);
   }
 }
