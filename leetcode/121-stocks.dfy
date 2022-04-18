@@ -96,15 +96,15 @@ method MaxProfit(prices: array<int>) returns (profit: int)
   profit := 0;
   var k := 0;
   ghost var lowIndex := 0;
-  ghost var i, j := -1, -1;
+  ghost var i, j := 0, 0;
 
   while k < prices.Length
     invariant k <= prices.Length
     invariant lowIndex == 0 || lowIndex < k
     invariant low == prices[lowIndex]
-    invariant profit > 0 ==> 0 <= i < prices.Length && 0 <= j < prices.Length
+    invariant 0 <= i < prices.Length && 0 <= j < prices.Length
     invariant profit > 0 ==> i < j
-    invariant profit > 0 ==> profit == prices[j] - prices[i]
+    invariant profit == prices[j] - prices[i]
     invariant forall i :: 0 <= i < k ==> prices[i] >= low
     invariant MaxProfitProp(prices[..k], profit)
   {
