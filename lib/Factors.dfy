@@ -128,4 +128,10 @@ module FactorsModule {
     }
   }
 
+  lemma AllFactorsSymmetric(n: int, i: int)
+    requires 0 <= i < |AllFactors(n)|
+    ensures AllFactors(n)[i] > 0
+    ensures AllFactors(n)[|AllFactors(n)| - i - 1] == n / AllFactors(n)[i]
+
+
 }
