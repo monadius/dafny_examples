@@ -1,5 +1,19 @@
 module Seq {
 
+  /***** Last *****/
+
+  function Last<T>(xs: seq<T>): T
+    requires 0 < |xs|
+  {
+    xs[|xs| - 1]
+  }
+
+  function RemoveLast<T>(xs: seq<T>): seq<T>
+    requires 0 < |xs|
+  {
+    xs[..|xs| - 1]
+  }
+
   /***** Reverse *****/
 
   function Reverse<T>(xs: seq<T>): seq<T> {
@@ -131,6 +145,37 @@ module Seq {
       Foldl(f, Foldl(f, z, xs), ys);
     }
   }
+
+  function Sum(xs: seq<int>): int {
+    Foldl((a, b) => a + b, 0, xs)
+  }
+
+  lemma SumConcat(xs: seq<int>, ys: seq<int>)
+    ensures Sum(xs + ys) == Sum(xs) + Sum(ys)
+  {
+    if |ys| == 0 {
+      assert xs + ys == xs;
+    } else {
+      assert xs + ys == (xs + RemoveLast(ys)) + [Last(ys)];
+      SumConcat(xs, RemoveLast(ys));
+    }
+  }
+
+  // method SumIter(xs: seq<int>) returns (s: int)
+  //   ensures s == Sum(xs)
+  // {
+  //   var i := 0;
+  //   s := 0;
+  //   while i < |xs|
+  //     invariant i <= |xs|
+  //     invariant s == Sum(xs[..i])
+  //   {
+  //     s := s + xs[i];
+  //     i := i + 1;
+  //     assert xs[..i] == xs[..i - 1] + [xs[i - 1]];
+  //   }
+  //   assert xs[..i] == xs;
+  // }
 
   // method FilterMethod(xs: seq<int>, f: int -> bool) returns (ys: seq<int>) 
   //   ensures forall y :: y in ys ==> f(y)
