@@ -1,5 +1,150 @@
 module Seq {
 
+  /***** Last *****/
+
+  function Last<T>(xs: seq<T>): T
+    requires 0 < |xs|
+  {
+    xs[|xs| - 1]
+  }
+
+  function RemoveLast<T>(xs: seq<T>): seq<T>
+    requires 0 < |xs|
+  {
+    xs[..|xs| - 1]
+  }
+
+  /***** Reverse *****/
+
+  function Reverse<T>(xs: seq<T>): seq<T> {
+    if |xs| == 0 then xs else Reverse(xs[1..]) + [xs[0]]
+  }
+
+  lemma ReverseLength<T>(xs: seq<T>)
+    ensures |Reverse(xs)| == |xs|
+  {
+    // reveal Reverse();
+  }
+
+  lemma ReverseMem<T>(xs: seq<T>)
+    ensures forall x {:trigger x in Reverse(xs)} :: x in Reverse(xs) <==> x in xs
+  {
+    // reveal Reverse();
+  }
+
+  lemma ReverseIndexAll<T>(xs: seq<T>)
+    ensures |Reverse(xs)| == |xs|
+    ensures forall i :: 0 <= i < |xs| ==> Reverse(xs)[i] == xs[|xs| - i - 1]
+  {
+    // reveal Reverse();
+  }
+
+  lemma ReverseIndex<T>(xs: seq<T>, i: int)
+    requires 0 <= i < |xs|
+    ensures |Reverse(xs)| == |xs|
+    ensures Reverse(xs)[i] == xs[|xs| - i - 1]
+  {
+    ReverseIndexAll(xs);
+    assert forall i :: 0 <= i < |xs| ==> Reverse(xs)[i] == xs[|xs| - i - 1];
+  }
+
+  lemma SeqEq<T>(xs: seq<T>, ys: seq<T>)
+    requires |xs| == |ys|
+    requires forall i :: 0 <= i < |xs| ==> xs[i] == ys[i]
+    ensures xs == ys
+  {
+  }
+
+  lemma ReverseReverse<T>(xs: seq<T>)
+    ensures Reverse(Reverse(xs)) == xs
+  {
+    ReverseIndexAll(Reverse(xs));
+    ReverseIndexAll(xs);
+    SeqEq(Reverse(Reverse(xs)), xs);
+  }
+
+  lemma ReverseConcat<T>(xs: seq<T>, ys: seq<T>)
+    ensures Reverse(xs + ys) == Reverse(ys) + Reverse(xs)
+  {
+    // reveal Reverse();
+    if |xs| == 0 {
+      assert xs + ys == ys;
+    } else {
+      assert xs + ys == [xs[0]] + (xs[1..] + ys);
+    }
+  }
+
+  /***** Foldl *****/
+
+  function Foldl'<A, B>(f: (A, B) -> A, z: A, xs: seq<B>): A {
+    if |xs| == 0 then z else Foldl'(f, f(z, xs[0]), xs[1..])
+  }
+
+  // This definition is more convenient for loop specifications
+  function Foldl<A, B>(f: (A, B) -> A, z: A, xs: seq<B>): A {
+    if |xs| == 0 then z else f(Foldl(f, z, xs[..|xs| - 1]), xs[|xs| - 1])
+  }
+
+  lemma Foldl'Concat<A, B>(f: (A, B) -> A, z: A, xs: seq<B>, ys: seq<B>)
+    ensures Foldl'(f, z, xs + ys) == Foldl'(f, Foldl'(f, z, xs), ys)
+  {
+    if |xs| == 0 {
+      assert xs + ys == ys;
+    } else {
+      calc {
+        Foldl'(f, z, xs + ys);
+        { assert (xs + ys)[1..] == xs[1..] + ys; }
+        Foldl'(f, f(z, xs[0]), xs[1..] + ys);
+        { Foldl'Concat(f, f(z, xs[0]), xs[1..], ys); }
+        Foldl'(f, Foldl'(f, f(z, xs[0]), xs[1..]), ys);
+      }
+    }
+  }
+
+  lemma FoldlEq<A, B>(f: (A, B) -> A, z: A, xs: seq<B>)
+    ensures Foldl(f, z, xs) == Foldl'(f, z, xs)
+  {
+    if |xs| > 0 {
+      calc {
+        Foldl'(f, z, xs);
+        { assert xs == xs[..|xs| - 1] + [xs[|xs| - 1]]; }
+        Foldl'(f, z, xs[..|xs| - 1] + [xs[|xs| - 1]]);
+        { Foldl'Concat(f, z, xs[..|xs| - 1], [xs[|xs| - 1]]); }
+        Foldl'(f, Foldl'(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
+        Foldl'(f, Foldl(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
+      }
+    }
+  }
+
+  lemma FoldlConcat<A, B>(f: (A, B) -> A, z: A, xs: seq<B>, ys: seq<B>)
+    ensures Foldl(f, z, xs + ys) == Foldl(f, Foldl(f, z, xs), ys)
+  {
+    calc {
+      Foldl(f, z, xs + ys);
+      { FoldlEq(f, z, xs + ys); }
+      Foldl'(f, z, xs + ys);
+      { Foldl'Concat(f, z, xs, ys); }
+      Foldl'(f, Foldl'(f, z, xs), ys);
+      { FoldlEq(f, z, xs); FoldlEq(f, Foldl(f, z, xs), ys); }
+      Foldl(f, Foldl(f, z, xs), ys);
+    }
+  }
+
+  function Sum(xs: seq<int>): int {
+    Foldl((a, b) => a + b, 0, xs)
+  }
+
+  lemma SumConcat(xs: seq<int>, ys: seq<int>)
+    ensures Sum(xs + ys) == Sum(xs) + Sum(ys)
+  {
+    if |ys| == 0 {
+      assert xs + ys == xs;
+    } else {
+      assert xs + ys == (xs + RemoveLast(ys)) + [Last(ys)];
+      SumConcat(xs, RemoveLast(ys));
+    }
+  }
+
   // method FilterMethod(xs: seq<int>, f: int -> bool) returns (ys: seq<int>) 
   //   ensures forall y :: y in ys ==> f(y)
   //   ensures forall x :: x in xs && f(x) ==> x in ys
@@ -26,6 +171,8 @@ module Seq {
   //   else if f(xs[0]) then [xs[0]] + Filter(xs[1..], f)
   //   else Filter(xs[1..], f)
   // }
+
+  /***** Sorted for seq<int> *****/
 
   predicate Sorted(xs: seq<int>) {
     forall i, j :: 0 <= i < j < |xs| ==> xs[i] <= xs[j]
@@ -67,6 +214,71 @@ module Seq {
 
   predicate IsSuffix<T>(xs: seq<T>, ys: seq<T>) {
     |xs| <= |ys| && xs == ys[|ys| - |xs|..]
+  }
+
+  /***** Distinct *****/
+
+  predicate Distinct<T>(xs: seq<T>) {
+    forall i, j :: 0 <= i < j < |xs| ==> xs[i] != xs[j]
+  }
+
+  predicate DistinctRec<T>(xs: seq<T>) {
+    if |xs| == 0 then true else xs[0] !in xs[1..] && DistinctRec(xs[1..])
+  }
+
+  predicate DistinctRecLast<T>(xs: seq<T>) {
+    if |xs| == 0 then true else Last(xs) !in RemoveLast(xs) && DistinctRecLast(RemoveLast(xs))
+  }
+
+  lemma DistinctEqRec<T>(xs: seq<T>)
+    ensures Distinct(xs) <==> DistinctRec(xs)
+  {
+  }
+
+  lemma DistinctEqRecLast<T>(xs: seq<T>)
+    ensures Distinct(xs) <==> DistinctRecLast(xs)
+  {
+  }
+
+  lemma DistinctSubseq<T>(xs: seq<T>, i: int, j: int)
+    requires 0 <= i <= j <= |xs|
+    requires Distinct(xs)
+    ensures Distinct(xs[i..j])
+  {
+  }
+
+
+  lemma DistinctImpDistinctReverse<T>(xs: seq<T>)
+    ensures Distinct(xs) ==> Distinct(Reverse(xs))
+  {
+    ReverseIndexAll(xs);
+  }
+
+  lemma DistinctReverse<T>(xs: seq<T>)
+    ensures Distinct(Reverse(xs)) <==> Distinct(xs)
+  {
+    if (Distinct(Reverse(xs))) {
+      calc {
+        Distinct(Reverse(xs));
+        { DistinctImpDistinctReverse(Reverse(xs)); }
+        Distinct(Reverse(Reverse(xs)));
+        { ReverseReverse(xs); }
+        Distinct(xs);
+      }
+    } else {
+      DistinctImpDistinctReverse(xs);
+    }
+  }
+
+  lemma DistinctAll<T>(xs: seq<T>)
+    ensures Distinct(xs) <==> forall i, j :: 0 <= i < |xs| && 0 <= j < |xs| && i != j ==> xs[i] != xs[j]
+  {
+  }
+
+  lemma SortedStrictImpDistinct(xs: seq<int>)
+    requires SortedStrict(xs)
+    ensures Distinct(xs)
+  {
   }
 
 }

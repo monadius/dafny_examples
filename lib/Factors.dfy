@@ -46,6 +46,13 @@ module FactorsModule {
     }
   }
 
+  lemma FactorsDistinct(n: int, d: int)
+    ensures Distinct(Factors(n, d))
+  {
+    FactorsSortedStrict(n, d);
+    SortedStrictImpDistinct(Factors(n, d));
+  }
+
   lemma AllFactorsNonPos(n: int)
     requires n <= 0
     ensures AllFactors(n) == []
@@ -127,5 +134,11 @@ module FactorsModule {
       FactorsPrefix(n, d, n);
     }
   }
+
+  lemma AllFactorsSymmetric(n: int, i: int)
+    requires 0 <= i < |AllFactors(n)|
+    ensures AllFactors(n)[i] > 0
+    ensures AllFactors(n)[|AllFactors(n)| - i - 1] == n / AllFactors(n)[i]
+
 
 }
