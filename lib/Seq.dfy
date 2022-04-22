@@ -85,22 +85,6 @@ module Seq {
     if |xs| == 0 then z else f(Foldl(f, z, xs[..|xs| - 1]), xs[|xs| - 1])
   }
 
-  // method FoldlLoop<A, B>(f: (A, B) -> A, z: A, xs: seq<B>) returns (r: A) 
-  //   ensures r == Foldl(f, z, xs)
-  // {
-  //   r := z;
-  //   var i := 0;
-  //   while i < |xs|
-  //     invariant i <= |xs|
-  //     invariant r == Foldl(f, z, xs[..i])
-  //   {
-  //     r := f(r, xs[i]);
-  //     i := i + 1;
-  //     assert xs[..i] == xs[..i - 1] + [xs[i - 1]];
-  //   }
-  //   assert xs[..i] == xs;
-  // }
-
   lemma Foldl'Concat<A, B>(f: (A, B) -> A, z: A, xs: seq<B>, ys: seq<B>)
     ensures Foldl'(f, z, xs + ys) == Foldl'(f, Foldl'(f, z, xs), ys)
   {
@@ -160,22 +144,6 @@ module Seq {
       SumConcat(xs, RemoveLast(ys));
     }
   }
-
-  // method SumIter(xs: seq<int>) returns (s: int)
-  //   ensures s == Sum(xs)
-  // {
-  //   var i := 0;
-  //   s := 0;
-  //   while i < |xs|
-  //     invariant i <= |xs|
-  //     invariant s == Sum(xs[..i])
-  //   {
-  //     s := s + xs[i];
-  //     i := i + 1;
-  //     assert xs[..i] == xs[..i - 1] + [xs[i - 1]];
-  //   }
-  //   assert xs[..i] == xs;
-  // }
 
   // method FilterMethod(xs: seq<int>, f: int -> bool) returns (ys: seq<int>) 
   //   ensures forall y :: y in ys ==> f(y)
@@ -246,6 +214,71 @@ module Seq {
 
   predicate IsSuffix<T>(xs: seq<T>, ys: seq<T>) {
     |xs| <= |ys| && xs == ys[|ys| - |xs|..]
+  }
+
+  /***** Distinct *****/
+
+  predicate Distinct<T>(xs: seq<T>) {
+    forall i, j :: 0 <= i < j < |xs| ==> xs[i] != xs[j]
+  }
+
+  predicate DistinctRec<T>(xs: seq<T>) {
+    if |xs| == 0 then true else xs[0] !in xs[1..] && DistinctRec(xs[1..])
+  }
+
+  predicate DistinctRecLast<T>(xs: seq<T>) {
+    if |xs| == 0 then true else Last(xs) !in RemoveLast(xs) && DistinctRecLast(RemoveLast(xs))
+  }
+
+  lemma DistinctEqRec<T>(xs: seq<T>)
+    ensures Distinct(xs) <==> DistinctRec(xs)
+  {
+  }
+
+  lemma DistinctEqRecLast<T>(xs: seq<T>)
+    ensures Distinct(xs) <==> DistinctRecLast(xs)
+  {
+  }
+
+  lemma DistinctSubseq<T>(xs: seq<T>, i: int, j: int)
+    requires 0 <= i <= j <= |xs|
+    requires Distinct(xs)
+    ensures Distinct(xs[i..j])
+  {
+  }
+
+
+  lemma DistinctImpDistinctReverse<T>(xs: seq<T>)
+    ensures Distinct(xs) ==> Distinct(Reverse(xs))
+  {
+    ReverseIndexAll(xs);
+  }
+
+  lemma DistinctReverse<T>(xs: seq<T>)
+    ensures Distinct(Reverse(xs)) <==> Distinct(xs)
+  {
+    if (Distinct(Reverse(xs))) {
+      calc {
+        Distinct(Reverse(xs));
+        { DistinctImpDistinctReverse(Reverse(xs)); }
+        Distinct(Reverse(Reverse(xs)));
+        { ReverseReverse(xs); }
+        Distinct(xs);
+      }
+    } else {
+      DistinctImpDistinctReverse(xs);
+    }
+  }
+
+  lemma DistinctAll<T>(xs: seq<T>)
+    ensures Distinct(xs) <==> forall i, j :: 0 <= i < |xs| && 0 <= j < |xs| && i != j ==> xs[i] != xs[j]
+  {
+  }
+
+  lemma SortedStrictImpDistinct(xs: seq<int>)
+    requires SortedStrict(xs)
+    ensures Distinct(xs)
+  {
   }
 
 }
