@@ -56,7 +56,7 @@ method LengthOfLongestSubstring(s: string) returns (maxLength: int)
     invariant forall k :: k in ind ==> 0 <= ind[k] < i
     invariant forall k :: k in ind ==> s[ind[k]] == k
     invariant forall k :: k in ind ==> k !in s[ind[k] + 1..i]
-    invariant forall k :: k !in ind ==> k !in s[..i]
+    invariant forall k :: k in s[..i] ==> k in ind
     invariant 0 <= left <= i
     invariant Distinct(s[left..i])
     invariant forall u :: 0 <= u <= i && Distinct(s[u..i]) ==> left <= u
