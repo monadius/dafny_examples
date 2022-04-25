@@ -48,19 +48,21 @@ module SeqMethods {
   }
 
   method FoldlIter<A, B>(f: (A, B) -> A, z: A, xs: seq<B>) returns (r: A) 
+    ensures r == Foldl'(f, z, xs)
     ensures r == Foldl(f, z, xs)
   {
     r := z;
     var i := 0;
     while i < |xs|
       invariant i <= |xs|
-      invariant r == Foldl(f, z, xs[..i])
+      invariant r == Foldl'(f, z, xs[..i])
     {
       r := f(r, xs[i]);
       i := i + 1;
       assert xs[..i] == xs[..i - 1] + [xs[i - 1]];
     }
     assert xs[..i] == xs;
+    FoldlEq(f, z, xs);
   }
 
   method SumIter(xs: seq<int>) returns (s: int)
