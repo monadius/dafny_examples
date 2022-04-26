@@ -1,3 +1,5 @@
+// Author: Shaobo He
+
 predicate knows(a: int, b: int)
 
 predicate isCelebrity(n : int, i : int)
