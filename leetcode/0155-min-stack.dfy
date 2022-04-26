@@ -2,63 +2,91 @@
 
 // import opened Seq
 
+include "../lib/List.dfy"
+
+import opened ListModule
+
 predicate IsMin(m: int, xs: seq<int>) {
   m in xs && forall i :: 0 <= i < |xs| ==> m <= xs[i]
 }
 
 class MinStack {
-  var data: seq<int>
-  var mins: seq<int>
+  var data : List<int>
+  var mins : List<int>
+
+  ghost var dataSeq: seq<int>
+  ghost var minsSeq: seq<int>
 
   predicate Valid() 
     reads this
   {
-    |mins| == |data|
-    && (forall k :: 0 <= k < |mins| ==> IsMin(mins[k], data[k..]))
-    // && (forall k :: 0 <= k < |mins| ==> mins[k] in data[k..])
+    ToSeq(data) == dataSeq && ToSeq(mins) == minsSeq && |dataSeq| == |minsSeq|
+    && (forall k :: 0 <= k < |minsSeq| ==> IsMin(minsSeq[k], dataSeq[k..]))
   }
 
   constructor()
     ensures Valid()
   {
-    data := [];
-    mins := [];
+    data := Nil;
+    mins := Nil;
+    dataSeq := [];
+    minsSeq := [];
+  }
+
+  predicate method IsEmpty()
+    reads this
+    requires Valid()
+    ensures IsEmpty() <==> |dataSeq| == 0
+  {
+    data.Nil?
   }
 
   method Push(val: int)
     modifies this
     requires Valid()
+    ensures dataSeq == [val] + old(dataSeq)
     ensures Valid()
+    ensures !IsEmpty()
   {
-    data := [val] + data;
-    mins := [if |mins| == 0 || val <= mins[0] then val else mins[0]] + mins;
-    assert mins[1..] == old(mins);
+    var min := if mins.Nil? || val <= mins.head then val else mins.head;
+    data := Cons(val, data);
+    mins := Cons(min, mins);
+    dataSeq := [val] + dataSeq;
+    minsSeq := [min] + minsSeq;
+
+    // assert minsSeq[1..] == old(minsSeq);
+    assert dataSeq[1..] == old(dataSeq);
   }
 
   method Pop() returns (val: int)
     modifies this
     requires Valid()
-    requires |data| > 0
+    requires !IsEmpty()
+    ensures dataSeq == old(dataSeq[1..])
     ensures Valid()
   {
-    val := data[0];
-    data := data[1..];
-    mins := mins[1..];
+    val := data.head;
+    data := data.tail;
+    mins := mins.tail;
+    dataSeq := dataSeq[1..];
+    minsSeq := minsSeq[1..];
   }
 
-  method Top() returns (val: int) 
-    requires |data| > 0
-    ensures val == data[0]
+  method Top() returns (val: int)
+    requires Valid()
+    requires !IsEmpty()
+    ensures val == dataSeq[0]
   {
-    return data[0];
+    return data.head;
   }
 
   method GetMin() returns (min: int)
     requires Valid()
-    requires |data| > 0
-    ensures IsMin(min, data)
+    requires !IsEmpty()
+    ensures IsMin(min, dataSeq)
   {
-    return mins[0];
+    assert mins.head == minsSeq[0];
+    return mins.head;
   }
 }
 
