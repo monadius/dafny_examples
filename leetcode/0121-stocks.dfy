@@ -94,7 +94,7 @@ method MaxProfit(prices: array<int>) returns (profit: int)
 {
   var low := prices[0];
   profit := 0;
-  var k := 0;
+  var k := 1;
   ghost var lowIndex := 0;
   ghost var i, j := 0, 0;
 

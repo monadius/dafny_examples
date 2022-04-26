@@ -2,13 +2,13 @@ module Seq {
 
   /***** Last *****/
 
-  function Last<T>(xs: seq<T>): T
+  function method Last<T>(xs: seq<T>): T
     requires 0 < |xs|
   {
     xs[|xs| - 1]
   }
 
-  function RemoveLast<T>(xs: seq<T>): seq<T>
+  function method RemoveLast<T>(xs: seq<T>): seq<T>
     requires 0 < |xs|
   {
     xs[..|xs| - 1]

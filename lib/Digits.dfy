@@ -31,9 +31,11 @@ module DigitsModule {
 
   lemma DigitsSpec(n: int, base: int)
     requires 0 <= n && 2 <= base
-    ensures Foldl((r, d) => r * base + d, 0, Digits(n, base)) == n
+    ensures Foldl'((r, d) => r * base + d, 0, Digits(n, base)) == n
+    // ensures Foldl((r, d) => r * base + d, 0, Digits(n, base)) == n
   {
     reveal Digits();
+    // FoldlEq((r, d) => r * base + d, 0, Digits(n, base));
   }
 
   lemma DigitsSplit(a: int, b: int, base: int)
