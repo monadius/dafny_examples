@@ -1,4 +1,4 @@
-include "Seq.dfy"
+include "../Seq.dfy"
 
 module FactorsModule {
   
