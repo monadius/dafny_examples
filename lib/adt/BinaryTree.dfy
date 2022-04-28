@@ -65,11 +65,24 @@ module BinaryTree {
         case Node(x, l, r) => Node(x, mirror(r), mirror(l))
     }
 
+    lemma mirrorPerm<T>(t: Tree<T>)
+    ensures forall x :: countBT(x, t) == countBT(x, mirror(t))
+    {
+
+    } 
+
     function countBT<T>(x: T, t: Tree<T>): nat {
         match t
         case Nil => 0
         case Node(y, l, r) =>
             (if x == y then 1 else 0) + countBT(x, l) + countBT(x, r)
+    }
+
+    lemma memberCountGE1<T>(x : T, t: Tree<T>)
+    requires member?(x, t)
+    ensures countBT(x, t) >= 1
+    {
+
     }
 
     function toMS<T>(t: Tree<T>): multiset<T> {
@@ -85,16 +98,15 @@ module BinaryTree {
     }
     
     /*
-    lemma countMSEq<T>(t : Tree<T>)
-    ensures forall x :: member?(x, t) ==> x in toMS(t) && toMS(t)[x] == count(x, t)
+    lemma countMSEq<T>(x: T, t : Tree<T>)
+    ensures member?(x, t) ==> x in toMS(t) && toMS(t)[x] == countBT(x, t)
     {
         forall x { memberInToMS(x, t); }
         match t {
-            case Nil => assume false;
+            case Nil => assert true;
             case Node(y, l, r) => {
-                assert member?(y, t);
-                assert toMS(t)[y] == 1 + toMS(l)[y] + toMS(r)[y];
-                assert count(y, t) == 1 + count(y, l) + count(y, r);
+                // Shaobo: TODO proof
+                assume false;
             }
         }
     }
