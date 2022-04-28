@@ -130,32 +130,30 @@ module BinaryTree {
 
     }
 
-    lemma preorderFlattenPerm<T>(t: Tree<T>)
-    ensures forall x :: countBT(x, t) == countSeq(x, preorderFlatten(t))
+    lemma countRecAppend<T>(x: T, s1: seq<T>, s2: seq<T>)
+    ensures countSeq(x, s1) + countSeq(x, s2) == countSeq(x, s1 + s2)
+    {
+        if |s1| == 0 {
+            assert s1 + s2 == s2;
+        } else {
+        // Shaobo: it seems the distributivity of list append is important here
+            assert s1 + s2 == [s1[0]] + (s1[1..] + s2);
+        }
+    }
+
+    lemma preorderFlattenPerm<T>(x: T, t: Tree<T>)
+    ensures countBT(x, t) == countSeq(x, preorderFlatten(t))
     {
         match t {
             case Nil => assert forall x :: countBT(x, t) == countSeq(x, preorderFlatten(t));
             case Node(y, l , r) => {
-                preorderFlattenPerm(l);
-                preorderFlattenPerm(r);
-                assert forall x :: x == y ==>
-                    1 + countBT(x, l) + countBT(x, r) ==
-                        1 + countSeq(x, preorderFlatten(l)) + countSeq(x, preorderFlatten(r));
-                assert forall x :: x != y ==>
-                    countBT(x, l) + countBT(x, r) ==
-                        countSeq(x, preorderFlatten(l)) + countSeq(x, preorderFlatten(r));
-                assert forall x :: x == y ==> countBT(x, t) == 1 + countBT(x, l) + countBT(x, r);
-                assert forall x :: x != y ==> countBT(x, t) == countBT(x, l) + countBT(x, r);
-                assert forall x :: x == y ==> countSeq(x, preorderFlatten(t)) ==
-                    1 + countSeq(x, preorderFlatten(l)) + countSeq(x, preorderFlatten(r));
-                assert forall x :: x != y ==> countSeq(x, preorderFlatten(t)) ==
-                    countSeq(x, preorderFlatten(l)) + countSeq(x, preorderFlatten(r));
-                assume false;
+                var lf := preorderFlatten(l);
+                var rf := preorderFlatten(r);
+                var f := preorderFlatten(t);
+                assert f == [y] + (lf + rf);
+                countRecAppend(x, lf, rf);
             }
-            
         }
-        //notMemberCount0(t);
-        //notMemberBTEqNotMemberIOFlatten(t);
     }
 
     function preorderFlatten<T>(t: Tree<T>) : seq<T>
