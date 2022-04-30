@@ -1,6 +1,6 @@
 include "DivMod.dfy"
 
-function Abs(x: int): int {
+function method Abs(x: int): int {
   if x < 0 then -x else x
 }
 

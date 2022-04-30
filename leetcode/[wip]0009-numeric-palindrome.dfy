@@ -1,4 +1,4 @@
-include "../lib/Digits.dfy"
+include "../lib/seq/Digits.dfy"
 include "../lib/Seq.dfy"
 
 import opened Seq

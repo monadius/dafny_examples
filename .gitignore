@@ -1,4 +1,4 @@
 .DS_Store
 bin/
 leetcode/*.txt
-lib/Work*
+lib/**/Work*
