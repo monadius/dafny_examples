@@ -289,37 +289,27 @@ module Seq {
 
   /***** Palindrome *****/
   predicate palindrome?<T>(s : seq<T>) {
-  if |s| <= 1 then true else (s[0] == s[|s|-1] && palindrome?(s[1..|s|-1]))
-}
+    if |s| <= 1 then true else (s[0] == s[|s|-1] && palindrome?(s[1..|s|-1]))
+  }
 
-lemma palindromeOne<T>(s: seq<T>)
-requires |s| == 1
-ensures palindrome?(s)
-{}
+  lemma palindromeOne<T>(s: seq<T>)
+    requires |s| == 1
+    ensures palindrome?(s)
+  {}
 
-lemma palindromeIndex<T>(s: seq<T>)
-requires palindrome?(s)
-ensures forall i :: 0 <= i < |s| ==> s[i] == s[|s|-1-i]
-{}
+  lemma palindromeIndex<T>(s: seq<T>)
+    requires palindrome?(s)
+    ensures forall i :: 0 <= i < |s| ==> s[i] == s[|s|-1-i]
+  {}
 
-
-lemma palindromToReverse<T>(s: seq<T>)
-requires palindrome?(s)
-ensures Reverse(s) == s
-{
-  palindromeIndex(s);
-  ReverseIndexAll(s);
-  //ReverseIndexAll(Reverse(s));
-}
-
-/*
-lemma reverseToPalindrome<T>(s: seq<T>)
-requires Reverse(s) == s
-ensures palindrome?(s)
-{
-  ReverseIndexAll(s);
-  ReverseIndexAll(Reverse(s));
-}
-*/
+  lemma palindromRelReverse<T>(s: seq<T>)
+    ensures palindrome?(s) <==> Reverse(s) == s
+  {
+    if |s| > 1 {
+      var t := s[1..|s| - 1];
+      ReverseIndexAll(s);
+      ReverseIndexAll(t);
+    }
+  }
 
 }
