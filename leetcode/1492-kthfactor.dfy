@@ -1,4 +1,4 @@
-include "../lib/Factors.dfy"
+include "../lib/math/Factors.dfy"
 
 import opened FactorsModule
 
