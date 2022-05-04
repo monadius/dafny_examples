@@ -4,95 +4,95 @@
 module BinaryTree {
     datatype Tree<T> = Nil | Node(value: T, left: Tree<T>, right: Tree<T>)
 
-    predicate member?<T>(x: T, t: Tree<T>) {
+    predicate Member?<T>(x: T, t: Tree<T>) {
         match t
         case Nil => false
-        case Node(y, l, r) => x == y || member?(x, l) || member?(x, r)
+        case Node(y, l, r) => x == y || Member?(x, l) || Member?(x, r)
     }
 
-    function size<T>(t: Tree<T>) : nat {
+    function Size<T>(t: Tree<T>) : nat {
         match t
         case Nil => 0
-        case Node(_, l, r) => 1 + size(l) + size(r)
+        case Node(_, l, r) => 1 + Size(l) + Size(r)
     }
 
-    function depth<T>(t: Tree<T>) : nat {
+    function Depth<T>(t: Tree<T>) : nat {
         match t
         case Nil => 0
-        case Node(_, l, r) => 1 + 1 + (if depth(l) > depth(r) then depth(l) else depth(r))
+        case Node(_, l, r) => 1 + (if Depth(l) > Depth(r) then Depth(l) else Depth(r))
     }
 
-    predicate equal?<T>(t1: Tree<T>, t2: Tree<T>) {
+    predicate Equal?<T>(t1: Tree<T>, t2: Tree<T>) {
         match t1
         case Nil => t2.Nil?
         case Node(v1, l1, r1) =>
             match t2
             case Nil => false
-            case Node(v2, l2, r2) => v1 == v2 && equal?(l1, l2) && equal?(r1, r2)
+            case Node(v2, l2, r2) => v1 == v2 && Equal?(l1, l2) && Equal?(r1, r2)
     }
 
-    lemma treeIdentityEqual<T>(t: Tree<T>)
-    ensures equal?(t, t)
+    lemma TreeIdentityEqual<T>(t: Tree<T>)
+    ensures Equal?(t, t)
     {
 
     }
 
     lemma NilNotEqNode<T>(t1: Tree<T>, t2: Tree<T>)
     requires t1.Nil? && t2.Node?
-    ensures !equal?(t1, t2)
+    ensures !Equal?(t1, t2)
     {
 
     }
 
-    predicate isLeaf?<T>(t: Tree<T>) {
+    predicate IsLeaf?<T>(t: Tree<T>) {
         t.Node? && t.left.Nil? && t.right.Nil?
     }
 
-    lemma leafNodeEqual<T>(t1: Tree<T>, t2: Tree<T>)
-    requires isLeaf?(t1) && isLeaf?(t2) && t1.value == t2.value
-    ensures equal?(t1, t2)
+    lemma LeafNodeEqual<T>(t1: Tree<T>, t2: Tree<T>)
+    requires IsLeaf?(t1) && IsLeaf?(t2) && t1.value == t2.value
+    ensures Equal?(t1, t2)
     {
 
     }
 
-    function mirror<T>(t: Tree<T>) : Tree<T>
+    function Mirror<T>(t: Tree<T>) : Tree<T>
     //ensures size(t) == size(mirror(t));
     //ensures depth(t) == depth(mirror(t));
     //ensures equal?(t, mirror(mirror(t)));
     {
         match t
         case Nil => Nil
-        case Node(x, l, r) => Node(x, mirror(r), mirror(l))
+        case Node(x, l, r) => Node(x, Mirror(r), Mirror(l))
     }
 
-    lemma mirrorPerm<T>(t: Tree<T>)
-    ensures forall x :: countBT(x, t) == countBT(x, mirror(t))
+    lemma MirrorPerm<T>(t: Tree<T>)
+    ensures forall x :: CountBT(x, t) == CountBT(x, Mirror(t))
     {
 
     } 
 
-    function countBT<T>(x: T, t: Tree<T>): nat {
+    function CountBT<T>(x: T, t: Tree<T>): nat {
         match t
         case Nil => 0
         case Node(y, l, r) =>
-            (if x == y then 1 else 0) + countBT(x, l) + countBT(x, r)
+            (if x == y then 1 else 0) + CountBT(x, l) + CountBT(x, r)
     }
 
-    lemma memberCountGE1<T>(x : T, t: Tree<T>)
-    requires member?(x, t)
-    ensures countBT(x, t) >= 1
+    lemma MemberCountGE1<T>(x : T, t: Tree<T>)
+    requires Member?(x, t)
+    ensures CountBT(x, t) >= 1
     {
 
     }
 
-    function toMS<T>(t: Tree<T>): multiset<T> {
+    function ToMS<T>(t: Tree<T>): multiset<T> {
         match t
         case Nil => multiset{}
-        case Node(x, l, r) => multiset{x} + toMS(l) + toMS(r)
+        case Node(x, l, r) => multiset{x} + ToMS(l) + ToMS(r)
     }
 
-    lemma memberInToMS<T>(x: T, t: Tree<T>)
-    ensures member?(x, t) ==> x in toMS(t)
+    lemma MemberInToMS<T>(x: T, t: Tree<T>)
+    ensures Member?(x, t) ==> x in ToMS(t)
     {
 
     }
@@ -113,37 +113,37 @@ module BinaryTree {
     */
 
     // Borrow from Alexey's old write up for CS6110
-    function countSeq<T>(x: T, s: seq<T>): nat
+    function CountSeq<T>(x: T, s: seq<T>): nat
     {
         if (|s| == 0) then
             0
         else if x == s[0] then
-            1 + countSeq(x, s[1..])
+            1 + CountSeq(x, s[1..])
         else
-            countSeq(x, s[1..])
+            CountSeq(x, s[1..])
     }
 
-    function inorderFlatten<T>(t: Tree<T>) : seq<T>
+    function InorderFlatten<T>(t: Tree<T>) : seq<T>
     {
         match t
         case Nil => []
-        case Node(x, l, r) => inorderFlatten(l) + [x] + inorderFlatten(r)
+        case Node(x, l, r) => InorderFlatten(l) + [x] + InorderFlatten(r)
     }
 
-    lemma notMemberCount0<T>(t: Tree<T>)
-    ensures forall x :: !member?(x, t) <==> countBT(x, t) == 0
+    lemma NotMemberCount0<T>(t: Tree<T>)
+    ensures forall x :: !Member?(x, t) <==> CountBT(x, t) == 0
     {
 
     }
 
-    lemma notMemberBTEqNotMemberIOFlatten<T>(t: Tree<T>)
-    ensures forall x :: !member?(x, t) <==> x !in inorderFlatten(t)
+    lemma NotMemberBTEqNotMemberIOFlatten<T>(t: Tree<T>)
+    ensures forall x :: !Member?(x, t) <==> x !in InorderFlatten(t)
     {
 
     }
 
-    lemma countRecAppend<T>(x: T, s1: seq<T>, s2: seq<T>)
-    ensures countSeq(x, s1) + countSeq(x, s2) == countSeq(x, s1 + s2)
+    lemma CountSeqAppend<T>(x: T, s1: seq<T>, s2: seq<T>)
+    ensures CountSeq(x, s1) + CountSeq(x, s2) == CountSeq(x, s1 + s2)
     {
         if |s1| == 0 {
             assert s1 + s2 == s2;
@@ -153,33 +153,33 @@ module BinaryTree {
         }
     }
 
-    lemma preorderFlattenPerm<T>(x: T, t: Tree<T>)
-    ensures countBT(x, t) == countSeq(x, preorderFlatten(t))
+    lemma PreorderFlattenPerm<T>(x: T, t: Tree<T>)
+    ensures CountBT(x, t) == CountSeq(x, PreorderFlatten(t))
     {
         match t {
-            case Nil => assert forall x :: countBT(x, t) == countSeq(x, preorderFlatten(t));
+            case Nil => assert forall x :: CountBT(x, t) == CountSeq(x, PreorderFlatten(t));
             case Node(y, l , r) => {
-                var lf := preorderFlatten(l);
-                var rf := preorderFlatten(r);
-                var f := preorderFlatten(t);
+                var lf := PreorderFlatten(l);
+                var rf := PreorderFlatten(r);
+                var f := PreorderFlatten(t);
                 assert f == [y] + (lf + rf);
-                countRecAppend(x, lf, rf);
+                CountSeqAppend(x, lf, rf);
             }
         }
     }
 
-    function preorderFlatten<T>(t: Tree<T>) : seq<T>
+    function PreorderFlatten<T>(t: Tree<T>) : seq<T>
     {
         match t
         case Nil => []
-        case Node(x, l, r) => [x] + preorderFlatten(l) + preorderFlatten(r)
+        case Node(x, l, r) => [x] + PreorderFlatten(l) + PreorderFlatten(r)
     }
 
-    function postorderFlatten<T>(t: Tree<T>) : seq<T>
+    function PostorderFlatten<T>(t: Tree<T>) : seq<T>
     {
         match t
         case Nil => []
-        case Node(x, l, r) => postorderFlatten(l) + postorderFlatten(r)
+        case Node(x, l, r) => PostorderFlatten(l) + PostorderFlatten(r)
     }
 
 }
