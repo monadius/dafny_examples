@@ -57,6 +57,20 @@ module BinaryTree {
             (if x == y then 1 else 0) + CountBT(x, l) + CountBT(x, r)
     }
 
+    lemma EqualImpSameCount<T>(t1: Tree<T>, t2: Tree<T>)
+    requires Equal?(t1, t2)
+    ensures forall x :: CountBT(x, t1) == CountBT(x, t2)
+    {
+    }
+
+    lemma EqualImpSameCountImp<T>(t1: Tree<T>, t2: Tree<T>)
+    ensures Equal?(t1, t2) ==> forall x :: CountBT(x, t1) == CountBT(x, t2)
+    {
+        if Equal?(t1, t2) {
+            EqualImpSameCount(t1, t2);
+        }
+    }
+
     lemma MemberCountGE1<T>(x : T, t: Tree<T>)
     ensures Member?(x, t) ==> CountBT(x, t) >= 1
     {
