@@ -50,24 +50,6 @@ module BinaryTree {
     {
     }
 
-    function method Mirror<T>(t: Tree<T>) : Tree<T>
-    {
-        match t
-        case Nil => Nil
-        case Node(x, l, r) => Node(x, Mirror(r), Mirror(l))
-    }
-
-    lemma MirrorEq<T>(t: Tree<T>)
-    ensures Equal?(t, Mirror(Mirror(t)))
-    {
-    }
-
-    lemma MirrorPerm<T>(t: Tree<T>)
-    ensures forall x :: CountBT(x, t) == CountBT(x, Mirror(t))
-    {
-
-    } 
-
     function CountBT<T>(x: T, t: Tree<T>): nat {
         match t
         case Nil => 0
