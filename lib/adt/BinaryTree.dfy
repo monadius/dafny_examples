@@ -34,14 +34,11 @@ module BinaryTree {
     lemma TreeIdentityEqual<T>(t: Tree<T>)
     ensures Equal?(t, t)
     {
-
     }
 
     lemma NilNotEqNode<T>(t1: Tree<T>, t2: Tree<T>)
-    requires t1.Nil? && t2.Node?
-    ensures !Equal?(t1, t2)
+    ensures t1.Nil? && t2.Node? ==> !Equal?(t1, t2)
     {
-
     }
 
     predicate IsLeaf?<T>(t: Tree<T>) {
@@ -49,10 +46,8 @@ module BinaryTree {
     }
 
     lemma LeafNodeEqual<T>(t1: Tree<T>, t2: Tree<T>)
-    requires IsLeaf?(t1) && IsLeaf?(t2) && t1.value == t2.value
-    ensures Equal?(t1, t2)
+    ensures IsLeaf?(t1) && IsLeaf?(t2) && t1.value == t2.value ==> Equal?(t1, t2)
     {
-
     }
 
     function Mirror<T>(t: Tree<T>) : Tree<T>
@@ -79,10 +74,8 @@ module BinaryTree {
     }
 
     lemma MemberCountGE1<T>(x : T, t: Tree<T>)
-    requires Member?(x, t)
-    ensures CountBT(x, t) >= 1
+    ensures Member?(x, t) ==> CountBT(x, t) >= 1
     {
-
     }
 
     function ToMS<T>(t: Tree<T>): multiset<T> {
@@ -94,7 +87,6 @@ module BinaryTree {
     lemma MemberInToMS<T>(x: T, t: Tree<T>)
     ensures Member?(x, t) ==> x in ToMS(t)
     {
-
     }
     
     /*
@@ -181,5 +173,4 @@ module BinaryTree {
         case Nil => []
         case Node(x, l, r) => PostorderFlatten(l) + PostorderFlatten(r)
     }
-
 }
