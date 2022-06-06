@@ -1,5 +1,5 @@
 include "../Seq.dfy"
-include "../Math/DivMod.dfy"
+include "../math/DivMod.dfy"
 
 module DigitsModule {
 
