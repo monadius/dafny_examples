@@ -286,5 +286,4 @@ module Seq {
     ensures Distinct(xs)
   {
   }
-
 }
