@@ -20,12 +20,3 @@ lemma MirrorPerm<T>(t: Tree<T>)
 ensures forall x :: CountBT(x, t) == CountBT(x, Mirror(t))
 {
 }
-    /*
-    match root
-    case Nil =>
-        mirror := Nil;
-    case Node(x, l, r) =>
-        var il := invertTree(r);
-        var ir := invertTree(l);
-        mirror := Node(x, il, ir);
-    */

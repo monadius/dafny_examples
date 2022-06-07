@@ -11,6 +11,7 @@ jobs:
           [
             ".",
             "leetcode",
+            "lib/adt",
             "lib/math",
             "lib/seq",
             "lib",
