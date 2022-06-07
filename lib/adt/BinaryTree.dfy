@@ -1,7 +1,10 @@
 // Author: Shaobo He
 // Functional Binary Tree
+include "../seq/Count.dfy"
 
 module BinaryTree {
+    import opened SeqCount
+    
     datatype Tree<T> = Nil | Node(value: T, left: Tree<T>, right: Tree<T>)
 
     predicate Member?<T>(x: T, t: Tree<T>) {
@@ -102,17 +105,6 @@ module BinaryTree {
     }
     */
 
-    // Borrow from Alexey's old write up for CS6110
-    function CountSeq<T>(x: T, s: seq<T>): nat
-    {
-        if (|s| == 0) then
-            0
-        else if x == s[0] then
-            1 + CountSeq(x, s[1..])
-        else
-            CountSeq(x, s[1..])
-    }
-
     function InorderFlatten<T>(t: Tree<T>) : seq<T>
     {
         match t
@@ -132,28 +124,17 @@ module BinaryTree {
 
     }
 
-    lemma CountSeqAppend<T>(x: T, s1: seq<T>, s2: seq<T>)
-    ensures CountSeq(x, s1) + CountSeq(x, s2) == CountSeq(x, s1 + s2)
-    {
-        if |s1| == 0 {
-            assert s1 + s2 == s2;
-        } else {
-        // Shaobo: it seems the distributivity of list append is important here
-            assert s1 + s2 == [s1[0]] + (s1[1..] + s2);
-        }
-    }
-
     lemma PreorderFlattenPerm<T>(x: T, t: Tree<T>)
-    ensures CountBT(x, t) == CountSeq(x, PreorderFlatten(t))
+    ensures CountBT(x, t) == Count(PreorderFlatten(t), x)
     {
         match t {
-            case Nil => assert forall x :: CountBT(x, t) == CountSeq(x, PreorderFlatten(t));
+            case Nil => assert forall x :: CountBT(x, t) == Count(PreorderFlatten(t), x);
             case Node(y, l , r) => {
                 var lf := PreorderFlatten(l);
                 var rf := PreorderFlatten(r);
                 var f := PreorderFlatten(t);
                 assert f == [y] + (lf + rf);
-                CountSeqAppend(x, lf, rf);
+                CountConcat(lf, rf, x);
             }
         }
     }
