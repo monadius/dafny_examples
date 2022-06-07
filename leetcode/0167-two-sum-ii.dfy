@@ -3,7 +3,7 @@ include "../lib/Seq.dfy"
 
 import opened Seq
 
-function method twoSumF(numbers: seq<int>, target: int, left: int, right: int) : (int, int)
+function method TwoSumF(numbers: seq<int>, target: int, left: int, right: int) : (int, int)
 requires 0 <= left <= right < |numbers|;
 requires Sorted(numbers);
 decreases right - left;
@@ -13,8 +13,8 @@ decreases right - left;
     else if numbers[left] + numbers[right] == target
     then (left, right)
     else if numbers[left] + numbers[right] > target
-    then twoSumF(numbers, target, left, right - 1)
-    else twoSumF(numbers, target, left + 1, right)
+    then TwoSumF(numbers, target, left, right - 1)
+    else TwoSumF(numbers, target, left + 1, right)
 
 }
 
@@ -22,16 +22,16 @@ lemma CaseFound(numbers: seq<int>, target: int, left: int, right: int)
 requires Sorted(numbers)
 requires 0 <= left <= right < |numbers|
 decreases right - left
-ensures twoSumF(numbers, target, left, right).0 >= 0 ==>
-    0 <= twoSumF(numbers, target, left, right).0 < twoSumF(numbers, target, left, right).1 < |numbers| &&
-    numbers[twoSumF(numbers, target, left, right).0] + numbers[twoSumF(numbers, target, left, right).1] == target
+ensures TwoSumF(numbers, target, left, right).0 >= 0 ==>
+    0 <= TwoSumF(numbers, target, left, right).0 < TwoSumF(numbers, target, left, right).1 < |numbers| &&
+    numbers[TwoSumF(numbers, target, left, right).0] + numbers[TwoSumF(numbers, target, left, right).1] == target
 {}
 
 lemma CaseNotFound(numbers: seq<int>, target: int, left: int, right: int)
 requires Sorted(numbers)
 requires 0 <= left <= right < |numbers|
 decreases right - left
-ensures twoSumF(numbers, target, left, right).0 == -1 ==>
+ensures TwoSumF(numbers, target, left, right).0 == -1 ==>
     forall i, j :: left <= i < j <= right ==> numbers[i] + numbers[j] != target
 {
     if left == right {
@@ -47,7 +47,7 @@ ensures twoSumF(numbers, target, left, right).0 == -1 ==>
 
 // Note that the return indices start with 0 instead of 1, to be consistent
 // with other questions.
-method twoSum(numbers: seq<int>, target: int) returns (r: (int, int))
+method TwoSum(numbers: seq<int>, target: int) returns (r: (int, int))
 requires Sorted(numbers);
 requires |numbers| >= 2;
 ensures 0 <= r.0 ==> 0 <= r.0 < r.1 < |numbers| && 
@@ -73,7 +73,7 @@ ensures r.0 == -1 ==> forall i, j :: 0 <= i < j < |numbers| ==> numbers[i] + num
     return (-1, -1);
     */
 
-    r := twoSumF(numbers, target, 0, |numbers|-1);
+    r := TwoSumF(numbers, target, 0, |numbers|-1);
     CaseFound(numbers, target, 0, |numbers|-1);
     CaseNotFound(numbers, target, 0, |numbers|-1);
 }
