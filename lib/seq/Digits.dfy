@@ -1,5 +1,5 @@
 include "../Seq.dfy"
-include "../Math/DivMod.dfy"
+include "../math/DivMod.dfy"
 
 module DigitsModule {
 
@@ -35,6 +35,9 @@ module DigitsModule {
     // ensures Foldl((r, d) => r * base + d, 0, Digits(n, base)) == n
   {
     reveal Digits();
+    if n >= base {
+      DigitsSpec(n / base, base);
+    }
     // FoldlEq((r, d) => r * base + d, 0, Digits(n, base));
   }
 

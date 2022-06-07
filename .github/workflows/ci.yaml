@@ -1,0 +1,40 @@
+name: check proofs
+
+on: [push, pull_request]
+
+jobs:
+  check-proofs:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        test_dir:
+          [
+            ".",
+            "leetcode",
+            "lib/math",
+            "lib/seq",
+            "lib",
+          ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: install danfy
+        run: |
+          wget -q https://github.com/dafny-lang/dafny/releases/download/v3.6.0/dafny-3.6.0-x64-ubuntu-16.04.zip
+          unzip -qq dafny-3.6.0-x64-ubuntu-16.04.zip
+          echo "dafny=$PWD/dafny/dafny" >> $GITHUB_ENV
+      - name: test
+        env:
+          DAFNY: "${{ env.dafny }}"
+          TEST_DIR: "${{ matrix.test_dir }}"
+        run: |
+          for b in $(ls $TEST_DIR/*.dfy)
+          do
+            echo $b
+            if [[ "$b" == *"[wip]"* ]]
+            then
+              echo "Ignore working in progress proof: "$b
+            else
+              $DAFNY $b /compile:0
+            fi
+            echo "================================================"
+          done
