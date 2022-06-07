@@ -4,7 +4,7 @@ include "../seq/Count.dfy"
 
 module BinaryTree {
     import opened SeqCount
-    
+
     datatype Tree<T> = Nil | Node(value: T, left: Tree<T>, right: Tree<T>)
 
     predicate Member?<T>(x: T, t: Tree<T>) {
@@ -90,21 +90,6 @@ module BinaryTree {
     {
     }
     
-    /*
-    lemma countMSEq<T>(x: T, t : Tree<T>)
-    ensures member?(x, t) ==> x in toMS(t) && toMS(t)[x] == countBT(x, t)
-    {
-        forall x { memberInToMS(x, t); }
-        match t {
-            case Nil => assert true;
-            case Node(y, l, r) => {
-                // Shaobo: TODO proof
-                assume false;
-            }
-        }
-    }
-    */
-
     function InorderFlatten<T>(t: Tree<T>) : seq<T>
     {
         match t
