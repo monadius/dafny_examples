@@ -1,9 +1,7 @@
 // Author: Shaobo He
-// include "../lib/Seq.dfy"
+include "../lib/Seq.dfy"
 
-predicate Sorted(xs: seq<int>) {
-    forall i, j :: 0 <= i < j < |xs| ==> xs[i] <= xs[j]
-}
+import opened Seq
 
 function method twoSumF(numbers: seq<int>, target: int, left: int, right: int) : (int, int)
 requires 0 <= left <= right < |numbers|;
