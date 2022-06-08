@@ -135,6 +135,6 @@ module BinaryTree {
     {
         match t
         case Nil => []
-        case Node(x, l, r) => PostorderFlatten(l) + PostorderFlatten(r)
+        case Node(x, l, r) => PostorderFlatten(l) + PostorderFlatten(r) + [x]
     }
 }
