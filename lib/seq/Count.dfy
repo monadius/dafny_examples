@@ -1,5 +1,6 @@
 include "../Seq.dfy"
 
+module SeqCount {
 import opened Seq
 
 function Count<T>(xs: seq<T>, v: T): nat {
@@ -49,5 +50,6 @@ lemma CountFoldl<T>(xs: seq<T>, v: T)
       Foldl'((r, x) => (if x == v then 1 else 0) + r, 0, RemoveLast(xs)) + (if Last(xs) == v then 1 else 0);
     }
   }
+}
 }
   
