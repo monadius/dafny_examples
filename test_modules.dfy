@@ -4,7 +4,7 @@ module Random {
     ensures a <= r <= b
 }
 
-function method rand(n: int): int
+function rand(n: int): int
   requires 0 <= n
   ensures 0 <= rand(n) <= n
 

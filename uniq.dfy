@@ -1,19 +1,19 @@
-predicate uniq_mult1<T>(s: seq<T>)
+predicate uniq_mult1<T(==)>(s: seq<T>)
 {
   forall t :: t in s ==> multiset(s)[t] == 1
 }
 
-predicate uniq_mult2<T>(s: seq<T>)
+predicate uniq_mult2<T(==)>(s: seq<T>)
 {
   forall t :: t in s ==> multiset(s)[t] <= 1
 }
 
-predicate uniq_distinct<T>(s: seq<T>)
+predicate uniq_distinct<T(==)>(s: seq<T>)
 {
   forall i, j :: 0 <= i < |s| && 0 <= j < |s| && i != j ==> s[i] != s[j]
 }
 
-predicate uniq_ind<T>(s: seq<T>)
+predicate uniq_ind<T(==)>(s: seq<T>)
 {
   if s == [] then true else s[0] !in s[1..] && uniq_ind(s[1..])
 }
@@ -28,7 +28,7 @@ lemma lemma2<T>(s: seq<T>)
 {
 }
 
-function count_eq<T>(x: T, s: seq<T>): nat
+function count_eq<T(==)>(x: T, s: seq<T>): nat
 {
   if s == [] then
     0

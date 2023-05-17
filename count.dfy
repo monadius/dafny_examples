@@ -1,4 +1,4 @@
-function count_eq<T>(x: T, s: seq<T>): nat
+function count_eq<T(==)>(x: T, s: seq<T>): nat
 {
   if s == [] then
     0

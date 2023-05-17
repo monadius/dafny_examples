@@ -15,7 +15,7 @@ method swap<T>(a: array<T>, i: int, j: int)
   a[j] := t;
 }
 
-predicate uniq<T>(s: seq<T>)
+predicate uniq<T(==)>(s: seq<T>)
 {
   forall x :: x in s ==> multiset(s)[x] == 1
 }

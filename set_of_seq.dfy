@@ -59,7 +59,7 @@ lemma set_of_seq_append<T>(s1: seq<T>, s2: seq<T>)
 {
 }
 
-function undup<T>(s: seq<T>): seq<T>
+function undup<T(==)>(s: seq<T>): seq<T>
 {
   if s == [] then
     []
@@ -110,7 +110,7 @@ lemma undup_undup<T>(s: seq<T>)
   }
 }
 
-predicate subseq<T>(s1: seq<T>, s2: seq<T>)
+predicate subseq<T(==)>(s1: seq<T>, s2: seq<T>)
 {
   if s1 == [] then
     true
@@ -155,7 +155,7 @@ lemma in_subseq<T>(x: T, s1: seq<T>, s2: seq<T>)
 {
 }
 
-predicate uniq_ind<T>(s: seq<T>)
+predicate uniq_ind<T(==)>(s: seq<T>)
 {
   if s == [] then
     true
