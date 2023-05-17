@@ -3,7 +3,7 @@ include "../lib/Seq.dfy"
 
 import opened Seq
 
-function method TwoSumF(numbers: seq<int>, target: int, left: int, right: int) : (int, int)
+function TwoSumF(numbers: seq<int>, target: int, left: int, right: int) : (int, int)
 requires 0 <= left <= right < |numbers|;
 requires Sorted(numbers);
 decreases right - left;

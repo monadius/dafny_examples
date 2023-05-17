@@ -2,7 +2,7 @@ include "../Seq.dfy"
 
 import opened Seq
 
-function {:opaque} Undup<T>(xs: seq<T>): seq<T> {
+function {:opaque} Undup<T(==)>(xs: seq<T>): seq<T> {
   if |xs| == 0 then xs 
   else if Last(xs) in RemoveLast(xs) then Undup(RemoveLast(xs))
   else Undup(RemoveLast(xs)) + [Last(xs)]

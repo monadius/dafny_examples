@@ -7,7 +7,7 @@ module BinaryTree {
 
     datatype Tree<T> = Nil | Node(value: T, left: Tree<T>, right: Tree<T>)
 
-    predicate Member?<T>(x: T, t: Tree<T>) {
+    predicate Member?<T(==)>(x: T, t: Tree<T>) {
         match t
         case Nil => false
         case Node(y, l, r) => x == y || Member?(x, l) || Member?(x, r)
@@ -25,7 +25,7 @@ module BinaryTree {
         case Node(_, l, r) => 1 + (if Depth(l) > Depth(r) then Depth(l) else Depth(r))
     }
 
-    predicate Equal?<T>(t1: Tree<T>, t2: Tree<T>) {
+    predicate Equal?<T(==)>(t1: Tree<T>, t2: Tree<T>) {
         match t1
         case Nil => t2.Nil?
         case Node(v1, l1, r1) =>
@@ -53,7 +53,7 @@ module BinaryTree {
     {
     }
 
-    function CountBT<T>(x: T, t: Tree<T>): nat {
+    function CountBT<T(==)>(x: T, t: Tree<T>): nat {
         match t
         case Nil => 0
         case Node(y, l, r) =>

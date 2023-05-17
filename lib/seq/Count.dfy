@@ -3,7 +3,7 @@ include "../Seq.dfy"
 module SeqCount {
 import opened Seq
 
-function Count<T>(xs: seq<T>, v: T): nat {
+function Count<T(==)>(xs: seq<T>, v: T): nat {
   if |xs| == 0 then 0
   else (if xs[0] == v then 1 else 0) + Count(xs[1..], v)
 }

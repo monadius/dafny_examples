@@ -2,13 +2,13 @@ module Seq {
 
   /***** Last *****/
 
-  function method Last<T>(xs: seq<T>): T
+  function Last<T>(xs: seq<T>): T
     requires 0 < |xs|
   {
     xs[|xs| - 1]
   }
 
-  function method RemoveLast<T>(xs: seq<T>): seq<T>
+  function RemoveLast<T>(xs: seq<T>): seq<T>
     requires 0 < |xs|
   {
     xs[..|xs| - 1]
@@ -218,21 +218,21 @@ module Seq {
     }
   }
 
-  predicate IsSuffix<T>(xs: seq<T>, ys: seq<T>) {
+  predicate IsSuffix<T(==)>(xs: seq<T>, ys: seq<T>) {
     |xs| <= |ys| && xs == ys[|ys| - |xs|..]
   }
 
   /***** Distinct *****/
 
-  predicate Distinct<T>(xs: seq<T>) {
+  predicate Distinct<T(==)>(xs: seq<T>) {
     forall i, j :: 0 <= i < j < |xs| ==> xs[i] != xs[j]
   }
 
-  predicate DistinctRec<T>(xs: seq<T>) {
+  predicate DistinctRec<T(==)>(xs: seq<T>) {
     if |xs| == 0 then true else xs[0] !in xs[1..] && DistinctRec(xs[1..])
   }
 
-  predicate DistinctRecLast<T>(xs: seq<T>) {
+  predicate DistinctRecLast<T(==)>(xs: seq<T>) {
     if |xs| == 0 then true else Last(xs) !in RemoveLast(xs) && DistinctRecLast(RemoveLast(xs))
   }
 

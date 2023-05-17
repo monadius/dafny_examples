@@ -1,10 +1,10 @@
 module EvenOdd {
 
-  function method Even(n: int): bool {
+  function Even(n: int): bool {
     n % 2 == 0
   }
 
-  function method Odd(n: int): bool {
+  function Odd(n: int): bool {
     n % 2 != 0
   }
 

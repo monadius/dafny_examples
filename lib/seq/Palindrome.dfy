@@ -5,7 +5,7 @@ include "../Seq.dfy"
 import opened Seq
 
 /***** Palindrome *****/
-predicate Palindrome?<T>(s: seq<T>) {
+predicate Palindrome?<T(==)>(s: seq<T>) {
   if |s| <= 1 then true else (s[0] == s[|s|-1] && Palindrome?(s[1..|s|-1]))
 }
 

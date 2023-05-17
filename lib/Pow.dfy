@@ -53,7 +53,7 @@ module PowModule {
     }
   }
 
-  function method FastPow(b: int, e: nat): int
+  function FastPow(b: int, e: nat): int
     decreases e
   {
     if e == 0 then 1 
