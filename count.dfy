@@ -24,27 +24,27 @@ lemma count_multiset<T>(x: T, s: seq<T>)
 {
   if s == [] {
   }
-/*  
-  else if x == s[0] {
-    calc {
-      count_eq(x, s);
-      1 + count_eq(x, s[1..]);
-      multiset{s[0]}[x] + count_eq(x, s[1..]);
-      multiset{s[0]}[x] + multiset(s[1..])[x];
-      multiset([s[0]] + s[1..])[x];
-      { assert s == [s[0]] + s[1..]; }
-      multiset(s)[x];
-    }
-  } 
-*/
+  /*  
+    else if x == s[0] {
+      calc {
+        count_eq(x, s);
+        1 + count_eq(x, s[1..]);
+        multiset{s[0]}[x] + count_eq(x, s[1..]);
+        multiset{s[0]}[x] + multiset(s[1..])[x];
+        multiset([s[0]] + s[1..])[x];
+        { assert s == [s[0]] + s[1..]; }
+        multiset(s)[x];
+      }
+    } 
+  */
   else {
     assert s == [s[0]] + s[1..];
-//    calc {
-//      count_eq(x, s);
-//      (if x == s[0] then 1 else 0) + count_eq(x, s[1..]);
-//      multiset{s[0]}[x] + multiset(s[1..])[x];
-//      { assert s == [s[0]] + s[1..]; }
-//      multiset(s)[x];
-//    }
+    //    calc {
+    //      count_eq(x, s);
+    //      (if x == s[0] then 1 else 0) + count_eq(x, s[1..]);
+    //      multiset{s[0]}[x] + multiset(s[1..])[x];
+    //      { assert s == [s[0]] + s[1..]; }
+    //      multiset(s)[x];
+    //    }
   }
 }

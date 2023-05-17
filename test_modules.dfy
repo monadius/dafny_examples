@@ -11,7 +11,7 @@ function rand(n: int): int
 method rand2(n: int) returns (r: int)
   requires 0 <= n
   ensures 0 <= r <= n
-  
+
 method Main()
 {
   var x := 2;
@@ -19,7 +19,7 @@ method Main()
 
   var r1 := Random.random(x, y);
   var r2 := Random.random(x, y);
-  
+
   assert r1 <= 4 && r2 <= 4;
 
   r1 := rand(y);

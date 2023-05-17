@@ -65,7 +65,7 @@ lemma uniq_count<T>(x: T, s: seq<T>)
     }
   }
   else {
-//    uniq_count(x, s[1..]);
+    //    uniq_count(x, s[1..]);
   }
 }
 
@@ -124,16 +124,16 @@ lemma in_uniq_append<T>(x: T, s1: seq<T>, s2: seq<T>)
       false;
     }
   }
-/*
-  if x in s1 {
-    var i :| 0 <= i < |s1| && s1[i] == x;
-    if x in s2 {
-      var j :| 0 <= j < |s2| && s2[j] == x;
-      assert (s1 + s2)[|s1| + j] == x;
-      lemma1(s1 + s2);
+  /*
+    if x in s1 {
+      var i :| 0 <= i < |s1| && s1[i] == x;
+      if x in s2 {
+        var j :| 0 <= j < |s2| && s2[j] == x;
+        assert (s1 + s2)[|s1| + j] == x;
+        lemma1(s1 + s2);
+      }
     }
-  }
-*/
+  */
 }
 
 lemma uniq_sub_aux<T>(x: T, s: seq<T>, a: int, b: int)
@@ -194,13 +194,13 @@ lemma count_multiset<T>(x: T, s: seq<T>)
   }
   else {
     assert s == [s[0]] + s[1..];
-//    calc {
-//      count_eq(x, s);
-//      (if x == s[0] then 1 else 0) + count_eq(x, s[1..]);
-//      multiset{s[0]}[x] + multiset(s[1..])[x];
-//      { assert s == [s[0]] + s[1..]; }
-//      multiset(s)[x];
-//    }
+    //    calc {
+    //      count_eq(x, s);
+    //      (if x == s[0] then 1 else 0) + count_eq(x, s[1..]);
+    //      multiset{s[0]}[x] + multiset(s[1..])[x];
+    //      { assert s == [s[0]] + s[1..]; }
+    //      multiset(s)[x];
+    //    }
   }
 }
 
@@ -237,8 +237,8 @@ lemma lemma3<T>(s: seq<T>)
 lemma lemma_all<T>(s: seq<T>)
   ensures uniq_ind(s) == uniq_distinct(s) == uniq_mult1(s) == uniq_mult2(s)
 {
-//  lemma1(s);
-//  lemma2(s);
+  //  lemma1(s);
+  //  lemma2(s);
   lemma3(s);
 }
 

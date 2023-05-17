@@ -46,16 +46,16 @@ lemma card_set_of_seq_le<T>(s: seq<T>)
   }
   else {
     calc {
-      |set_of_seq(s)|;
-      == { set_of_seq_ind_eq(s); }
-        |set_of_seq_ind(s)|;
-      == { assert s == [s[0]] + s[1..]; }
-        |set_of_seq_ind([s[0]] + s[1..])|;
-      <= 1 + |set_of_seq_ind(s[1..])|;
-      == { set_of_seq_ind_eq(s[1..]); }
-        1 + |set_of_seq(s[1..])|;
-      <= { card_set_of_seq_le(s[1..]); }
-        1 + |s[1..]|;
+       |set_of_seq(s)|;
+    == { set_of_seq_ind_eq(s); }
+       |set_of_seq_ind(s)|;
+    == { assert s == [s[0]] + s[1..]; }
+       |set_of_seq_ind([s[0]] + s[1..])|;
+    <= 1 + |set_of_seq_ind(s[1..])|;
+    == { set_of_seq_ind_eq(s[1..]); }
+       1 + |set_of_seq(s[1..])|;
+    <= { card_set_of_seq_le(s[1..]); }
+       1 + |s[1..]|;
     }
   }
 }
@@ -86,9 +86,9 @@ lemma set_of_seq_undup<T>(s: seq<T>)
   if s == [] {
   }
   else {
-//    set_of_seq_ind_eq(undup(s));
-//    assert s == [s[0]] + s[1..];
-//    set_of_seq_ind_eq(undup(s[1..]));
+    //    set_of_seq_ind_eq(undup(s));
+    //    assert s == [s[0]] + s[1..];
+    //    set_of_seq_ind_eq(undup(s[1..]));
     calc {
       set_of_seq(undup(s));
       { set_of_seq_ind_eq(undup(s)); }
@@ -104,15 +104,15 @@ lemma undup_undup<T>(s: seq<T>)
 {
   if s == [] {
   }
-  else if s[0] in s[1..] {  
-//    assert s == [s[0]] + s[1..];
-//    set_of_seq_ind_eq(s);
-//    set_of_seq_ind_eq(s[1..]);
+  else if s[0] in s[1..] {
+    //    assert s == [s[0]] + s[1..];
+    //    set_of_seq_ind_eq(s);
+    //    set_of_seq_ind_eq(s[1..]);
   }
   else {
-//    assume undup(s[1..]) == undup(s)[1..];
+    //    assume undup(s[1..]) == undup(s)[1..];
     in_undup(s[0], s[1..]);
-//    assert s[0] !in undup(s[1..]);
+    //    assert s[0] !in undup(s[1..]);
   }
 }
 
@@ -223,10 +223,10 @@ lemma card_set_of_seq_uniq<T>(s: seq<T>)
     set_of_seq_ind_eq(s[1..]);
     set_of_seq_ind_eq(s);
   }
-    
-//  undup_uniq(s);
-//  set_of_seq_ind_eq(s);
-//  card_set_of_undup(s);
+
+  //  undup_uniq(s);
+  //  set_of_seq_ind_eq(s);
+  //  card_set_of_undup(s);
 }
 
 lemma card_set_of_undup<T>(s: seq<T>)
