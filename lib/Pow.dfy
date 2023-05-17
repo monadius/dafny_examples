@@ -43,6 +43,12 @@ module PowModule {
   lemma PowMul(x: int, y: int, e: nat)
     ensures Pow(x * y, e) == Pow(x, e) * Pow(y, e)
   {
+    if e == 0 {
+
+    }
+    else {
+      assert Pow(x*y, e-1) == Pow(x,e-1)*Pow(y,e-1);
+    }
   }
 
   lemma PowExpAdd(x: int, a: nat, b: nat)
@@ -56,7 +62,7 @@ module PowModule {
   function FastPow(b: int, e: nat): int
     decreases e
   {
-    if e == 0 then 1 
+    if e == 0 then 1
     else if e % 2 == 0 then FastPow(b * b, e / 2)
     else b * FastPow(b, e - 1)
   }

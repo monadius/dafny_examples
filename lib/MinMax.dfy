@@ -29,5 +29,5 @@ module MinMax {
     ensures a == b
   {
   }
-  
+
 }
