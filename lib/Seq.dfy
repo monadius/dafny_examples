@@ -107,20 +107,21 @@ module Seq {
     }
   }
 
-  lemma FoldlEq<A, B>(f: (A, B) -> A, z: A, xs: seq<B>)
-    ensures Foldl'(f, z, xs) == Foldl(f, z, xs)
-  {
-    if |xs| > 0 {
-      calc {
-        Foldl(f, z, xs);
-        { assert xs == xs[..|xs| - 1] + [xs[|xs| - 1]]; }
-        Foldl(f, z, xs[..|xs| - 1] + [xs[|xs| - 1]]);
-        { FoldlConcat(f, z, xs[..|xs| - 1], [xs[|xs| - 1]]); }
-        Foldl(f, Foldl(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
-        Foldl(f, Foldl'(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
+  /*
+    lemma FoldlEq<A, B>(f: (A, B) -> A, z: A, xs: seq<B>)
+      ensures Foldl'(f, z, xs) == Foldl(f, z, xs)
+    {
+      if |xs| > 0 {
+        calc {
+          Foldl(f, z, xs);
+          { assert xs == xs[..|xs| - 1] + [xs[|xs| - 1]]; }
+          Foldl(f, z, xs[..|xs| - 1] + [xs[|xs| - 1]]);
+          { FoldlConcat(f, z, xs[..|xs| - 1], [xs[|xs| - 1]]); }
+          Foldl(f, Foldl(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
+          Foldl(f, Foldl'(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
+        }
       }
     }
-  }
 
   lemma Foldl'Concat<A, B>(f: (A, B) -> A, z: A, xs: seq<B>, ys: seq<B>)
     ensures Foldl'(f, z, xs + ys) == Foldl'(f, Foldl'(f, z, xs), ys)
@@ -135,6 +136,7 @@ module Seq {
       Foldl'(f, Foldl'(f, z, xs), ys);
     }
   }
+  */
 
   function Sum(xs: seq<int>): int {
     Foldl'((a, b) => a + b, 0, xs)
@@ -151,7 +153,7 @@ module Seq {
     }
   }
 
-  // method FilterMethod(xs: seq<int>, f: int -> bool) returns (ys: seq<int>) 
+  // method FilterMethod(xs: seq<int>, f: int -> bool) returns (ys: seq<int>)
   //   ensures forall y :: y in ys ==> f(y)
   //   ensures forall x :: x in xs && f(x) ==> x in ys
   // {
@@ -173,7 +175,7 @@ module Seq {
   //   ensures forall y :: y in Filter(xs, f) ==> f(y)
   //   ensures forall x :: x in xs && f(x) ==> x in Filter(xs, f)
   // {
-  //   if |xs| == 0 then [] 
+  //   if |xs| == 0 then []
   //   else if f(xs[0]) then [xs[0]] + Filter(xs[1..], f)
   //   else Filter(xs[1..], f)
   // }
@@ -188,7 +190,7 @@ module Seq {
     forall i :: 0 <= i < |xs| - 1 ==> xs[i] <= xs[i + 1]
   }
 
-  lemma SortedEq1(xs: seq<int>) 
+  lemma SortedEq1(xs: seq<int>)
     ensures Sorted(xs) <==> Sorted1(xs)
   {
     if |xs| > 0 {
@@ -207,7 +209,7 @@ module Seq {
     forall i :: 0 <= i < |xs| - 1 ==> xs[i] < xs[i + 1]
   }
 
-  lemma SortedStrictEq1(xs: seq<int>) 
+  lemma SortedStrictEq1(xs: seq<int>)
     ensures SortedStrict(xs) <==> SortedStrict1(xs)
   {
     if |xs| > 0 {
