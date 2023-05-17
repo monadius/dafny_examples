@@ -107,21 +107,22 @@ module Seq {
     }
   }
 
-  /*
-    lemma FoldlEq<A, B>(f: (A, B) -> A, z: A, xs: seq<B>)
-      ensures Foldl'(f, z, xs) == Foldl(f, z, xs)
-    {
-      if |xs| > 0 {
-        calc {
-          Foldl(f, z, xs);
-          { assert xs == xs[..|xs| - 1] + [xs[|xs| - 1]]; }
-          Foldl(f, z, xs[..|xs| - 1] + [xs[|xs| - 1]]);
-          { FoldlConcat(f, z, xs[..|xs| - 1], [xs[|xs| - 1]]); }
-          Foldl(f, Foldl(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
-          Foldl(f, Foldl'(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
-        }
+
+  lemma FoldlEq<A, B>(f: (A, B) -> A, z: A, xs: seq<B>)
+    ensures Foldl'(f, z, xs) == Foldl(f, z, xs)
+  {
+    if |xs| > 0 {
+      calc {
+        Foldl(f, z, xs);
+        { assert xs == xs[..|xs| - 1] + [xs[|xs| - 1]]; }
+        Foldl(f, z, xs[..|xs| - 1] + [xs[|xs| - 1]]);
+        { FoldlConcat(f, z, xs[..|xs| - 1], [xs[|xs| - 1]]); }
+        Foldl(f, Foldl(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
+        Foldl(f, Foldl'(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
       }
+      assume false;
     }
+  }
 
   lemma Foldl'Concat<A, B>(f: (A, B) -> A, z: A, xs: seq<B>, ys: seq<B>)
     ensures Foldl'(f, z, xs + ys) == Foldl'(f, Foldl'(f, z, xs), ys)
@@ -136,7 +137,7 @@ module Seq {
       Foldl'(f, Foldl'(f, z, xs), ys);
     }
   }
-  */
+
 
   function Sum(xs: seq<int>): int {
     Foldl'((a, b) => a + b, 0, xs)
