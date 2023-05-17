@@ -1,6 +1,6 @@
 function set_of_seq<T>(s: seq<T>): set<T>
 {
-  set x: T | x in s :: x
+  set x: T | x in s
 }
 
 lemma in_set_of_seq<T>(x: T, s: seq<T>)
@@ -31,6 +31,12 @@ function set_of_seq_ind<T>(s: seq<T>): set<T>
 lemma set_of_seq_ind_eq<T>(s: seq<T>)
   ensures set_of_seq(s) == set_of_seq_ind(s)
 {
+  if s == [] {
+
+  } else {
+    assert (set x: T | x in s[1..]) == set_of_seq_ind(s[1..]);
+    assert (set x: T | x in s) == ({s[0]} + (set x: T | x in s[1..]));
+  }
 }
 
 lemma card_set_of_seq_le<T>(s: seq<T>)
