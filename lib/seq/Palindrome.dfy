@@ -10,29 +10,35 @@ predicate Palindrome?<T(==)>(s: seq<T>) {
 }
 
 lemma OneCharStringIsPalindrome<T>(s: seq<T>)
-ensures |s| == 1 ==> Palindrome?(s)
+  ensures |s| == 1 ==> Palindrome?(s)
 {}
 
 lemma PalindromeIndex<T>(s: seq<T>)
-requires Palindrome?(s)
-ensures forall i :: 0 <= i < |s| ==> s[i] == s[|s|-1-i]
+  requires Palindrome?(s)
+  ensures forall i :: 0 <= i < |s| ==> s[i] == s[|s|-1-i]
 {
-}
+  if |s| <= 1 {
 
-lemma PalindromIndexImp<T>(s: seq<T>)
-ensures Palindrome?(s) ==> (forall i :: 0 <= i < |s| ==> s[i] == s[|s|-1-i])
-{
-  if Palindrome?(s) {
-    PalindromeIndex(s);
   }
 }
 
-lemma PalindromRelReverse<T>(s: seq<T>)
-ensures Palindrome?(s) <==> Reverse(s) == s
+lemma PalindromeIndexRev<T>(s: seq<T>)
+  requires forall i :: 0 <= i < |s| ==> s[i] == s[|s|-1-i]
+  ensures Palindrome?(s)
+{}
+
+lemma PalindromImpliesReverseEq<T>(s: seq<T>)
+  requires Palindrome?(s)
+  ensures Reverse(s) == s
 {
-  if |s| > 1 {
-    var t := s[1..|s| - 1];
-    ReverseIndexAll(s);
-    ReverseIndexAll(t);
-  }
+  ReverseIndexAll(s);
+  PalindromeIndex(s);
+}
+
+lemma ReverseEqImpliesPalindrom<T>(s: seq<T>)
+  requires Reverse(s) == s
+  ensures Palindrome?(s)
+{
+  ReverseIndexAll(s);
+  PalindromeIndexRev(s);
 }

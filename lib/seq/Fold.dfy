@@ -90,7 +90,7 @@ ghost predicate OpNeutral<T(!new)>(f: (T, T) -> T, z: T) {
   forall x :: f(x, z) == f(z, x) == x
 }
 
-lemma FoldrEqFoldl<T(!new)>(f: (T, T) -> T, xs: seq<T>, z: T) 
+lemma FoldrEqFoldl<T(!new)>(f: (T, T) -> T, xs: seq<T>, z: T)
   requires OpAssoc(f)
   requires OpNeutral(f, z)
   ensures Foldr(f, xs, z) == Foldl(f, z, xs)

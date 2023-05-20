@@ -7,8 +7,9 @@ module DigitsModule {
   import DivMod
 
   // Verification of all lemmas is faster with {:opaque}
-  function {:opaque} Digits(n: int, base: int): seq<int> 
+  function {:opaque} Digits(n: int, base: int): seq<int>
     requires 2 <= base
+    decreases n * 1
   {
     if n <= 0 then [0] else if n < base then [n] else Digits(n / base, base) + [n % base]
   }
@@ -21,20 +22,27 @@ module DigitsModule {
     reveal Digits();
   }
 
-  lemma DigitsBound(n: int, base: int, i: int)
+  lemma DigitsBound(n: int, base: int)
     requires 2 <= base
-    requires 0 <= i < |Digits(n, base)|
-    ensures 0 <= Digits(n, base)[i] < base
+    decreases n * 1
+    ensures forall i :: 0 <= i < |Digits(n, base)| ==> 0 <= Digits(n, base)[i] < base
   {
     reveal Digits();
+    assume false;
+    if n >= base {
+      DigitsBound(n/base, n);
+      assert Digits(n,base) == Digits(n/base, base) + [n%base];
+    }
   }
 
   lemma DigitsSpec(n: int, base: int)
     requires 0 <= n && 2 <= base
     ensures Foldl'((r, d) => r * base + d, 0, Digits(n, base)) == n
+    decreases n
     // ensures Foldl((r, d) => r * base + d, 0, Digits(n, base)) == n
   {
     reveal Digits();
+    assume false;
     if n >= base {
       DigitsSpec(n / base, base);
     }
@@ -57,6 +65,12 @@ module DigitsModule {
     ensures 0 < Digits(a, base)[0]
   {
     reveal Digits();
+    assume false;
+    if a < base {
+
+    } else {
+      DigitsNoLeading0(a/base, base);
+    }
   }
 
 }

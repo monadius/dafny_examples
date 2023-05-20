@@ -63,5 +63,5 @@ module EvenOdd {
   {
     assert n == 2 * (n / 2) + 1;
   }
-  
+
 }
