@@ -120,6 +120,7 @@ module Seq {
     ensures Foldl'(f, z, xs) == Foldl(f, z, xs)
   {
     if |xs| > 0 {
+      FoldlEq(f, Foldl'(f, z, xs[..|xs| - 1]), xs[1..]);
       calc {
         Foldl(f, z, xs);
         { assert xs == xs[..|xs| - 1] + [xs[|xs| - 1]]; }
@@ -128,7 +129,6 @@ module Seq {
         Foldl(f, Foldl(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
         Foldl(f, Foldl'(f, z, xs[..|xs| - 1]), [xs[|xs| - 1]]);
       }
-      assume false;
     }
   }
 
