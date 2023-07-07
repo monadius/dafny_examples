@@ -165,9 +165,9 @@ method fillWithRandomDataEntries<T(==, 0)>(m_workList: array<T>, n: int, avoidSe
   }
 
   if r < n {
-    //    assert k == -1;
-    //    assert forall x :: x in m_workList[..] ==> x in avoidSet || x in out[0..r];
-    //    assert forall x :: x in m_workList[..] ==> x in avoidSet + out[0..r];
+    assert k == -1;
+    assert forall x :: x in m_workList[..] ==> x in avoidSet || x in out[0..r];
+    assert forall x :: x in m_workList[..] ==> x in avoidSet + out[0..r];
 
     uniq_multiset_subset(m_workList[..], avoidSet + out[0..r]);
     card_multiset_subset(multiset(m_workList[..]), multiset(avoidSet + out[0..r]));
