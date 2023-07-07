@@ -24,13 +24,13 @@ module DigitsModule {
 
   lemma DigitsBound(n: int, base: int)
     requires 2 <= base
-    decreases n * 1
+    decreases n
     ensures forall i :: 0 <= i < |Digits(n, base)| ==> 0 <= Digits(n, base)[i] < base
   {
     reveal Digits();
-    assume false;
     if n >= base {
-      DigitsBound(n/base, n);
+      assert n / base < n;
+      DigitsBound(n/base, base);
       assert Digits(n,base) == Digits(n/base, base) + [n%base];
     }
   }
@@ -42,9 +42,23 @@ module DigitsModule {
     // ensures Foldl((r, d) => r * base + d, 0, Digits(n, base)) == n
   {
     reveal Digits();
-    assume false;
     if n >= base {
+      assert n / base < n;
       DigitsSpec(n / base, base);
+      assert |Digits(n / base, base) + [n % base]| >= 1;
+      assert RemoveLast(Digits(n / base, base) + [n % base]) == Digits(n / base, base) by {
+        RemoveLastAppend(Digits(n / base, base), n % base);
+      }
+      assert Last(Digits(n / base, base) + [n % base]) == n % base by {
+        LastAppend(Digits(n / base, base), n % base);
+      }
+      calc ==
+      {
+        Foldl'((r, d) => r * base + d, 0, Digits(n, base));
+        Foldl'((r, d) => r * base + d, 0, Digits(n / base, base) + [n % base]);
+        Foldl'((r, d) => r * base + d, 0, RemoveLast(Digits(n / base, base) + [n % base]))*base + Last(Digits(n / base, base) + [n % base]);
+        Foldl'((r, d) => r * base + d, 0, Digits(n / base, base))*base +  (n % base);
+      }
     }
     // FoldlEq((r, d) => r * base + d, 0, Digits(n, base));
   }
@@ -63,14 +77,15 @@ module DigitsModule {
     requires 0 < a
     ensures 0 < |Digits(a, base)|
     ensures 0 < Digits(a, base)[0]
+    decreases a
   {
     reveal Digits();
-    assume false;
     if a < base {
 
     } else {
+      assert a / base < a;
       DigitsNoLeading0(a/base, base);
+      assert Digits(a, base)[0] == Digits(a / base, base)[0];
     }
   }
-
 }

@@ -14,6 +14,14 @@ module Seq {
     xs[..|xs| - 1]
   }
 
+  lemma LastAppend<T>(xs: seq<T>, x: T)
+    ensures Last(xs + [x]) == x
+  {}
+
+  lemma RemoveLastAppend<T>(xs: seq<T>, x: T)
+    ensures RemoveLast(xs + [x]) == xs
+  {}
+
   lemma ConcatRemoveLastLast<T>(xs: seq<T>)
     requires 0 < |xs|
     ensures RemoveLast(xs) + [Last(xs)] == xs
