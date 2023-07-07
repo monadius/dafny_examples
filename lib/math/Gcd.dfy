@@ -1,6 +1,6 @@
 include "Abs.dfy"
 
-function method {:opaque} Gcd(a: int, b: int): int
+function {:opaque} Gcd(a: int, b: int): int
   decreases Abs(b)
 {
   if b != 0 then Gcd(b, a % b) else if a == 0 then 1 else Abs(a)

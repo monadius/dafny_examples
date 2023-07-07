@@ -1,7 +1,7 @@
 include "../Seq.dfy"
 
 module FactorsModule {
-  
+
   import opened Seq
 
   function AllFactorsSet(n: int): set<int> {
@@ -65,7 +65,7 @@ module FactorsModule {
   {
   }
 
-  // function Factors2(n: int, d: int): seq<int> 
+  // function Factors2(n: int, d: int): seq<int>
   //   requires n >= 1
   // {
   //   Filter(seq(n, i => i + 1), d => d > 0 && n % d == 0)

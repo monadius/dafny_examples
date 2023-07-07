@@ -3,7 +3,7 @@ include "../lib/adt/BinaryTree.dfy"
 
 import opened BinaryTree
 
-function method Mirror<T>(t: Tree<T>) : Tree<T>
+function Mirror<T>(t: Tree<T>) : Tree<T>
 {
     match t
     case Nil => Nil

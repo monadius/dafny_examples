@@ -1,10 +1,10 @@
-function method Last<T>(xs: seq<T>): T
+function Last<T>(xs: seq<T>): T
   requires 0 < |xs|
 {
   xs[|xs| - 1]
 }
 
-function method RemoveLast<T>(xs: seq<T>): seq<T>
+function RemoveLast<T>(xs: seq<T>): seq<T>
   requires 0 < |xs|
 {
   xs[..|xs| - 1]
@@ -78,19 +78,19 @@ function Foldr'<A, B>(f: (B, A) -> A, xs: seq<B>, z: A): A {
 //   }
 // }
 
-predicate OpComm<T>(f: (T, T) -> T, dom: seq<T>) {
+predicate OpComm<T(==)>(f: (T, T) -> T, dom: seq<T>) {
   forall x, y :: x in dom && y in dom ==> f(x, y) == f(y, x)
 }
 
-predicate OpAssoc<T(!new)>(f: (T, T) -> T) {
+ghost predicate OpAssoc<T(!new)>(f: (T, T) -> T) {
   forall x, y, z :: f(x, f(y, z)) == f(f(x, y), z)
 }
 
-predicate OpNeutral<T(!new)>(f: (T, T) -> T, z: T) {
+ghost predicate OpNeutral<T(!new)>(f: (T, T) -> T, z: T) {
   forall x :: f(x, z) == f(z, x) == x
 }
 
-lemma FoldrEqFoldl<T(!new)>(f: (T, T) -> T, xs: seq<T>, z: T) 
+lemma FoldrEqFoldl<T(!new)>(f: (T, T) -> T, xs: seq<T>, z: T)
   requires OpAssoc(f)
   requires OpNeutral(f, z)
   ensures Foldr(f, xs, z) == Foldl(f, z, xs)

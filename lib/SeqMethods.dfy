@@ -47,7 +47,7 @@ module SeqMethods {
     return a;
   }
 
-  method FoldlIter<A, B>(f: (A, B) -> A, z: A, xs: seq<B>) returns (r: A) 
+  method FoldlIter<A, B>(f: (A, B) -> A, z: A, xs: seq<B>) returns (r: A)
     ensures r == Foldl'(f, z, xs)
     ensures r == Foldl(f, z, xs)
   {

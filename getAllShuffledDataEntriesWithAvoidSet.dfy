@@ -15,7 +15,7 @@ method swap<T>(a: array<T>, i: int, j: int)
   a[j] := t;
 }
 
-predicate uniq<T>(s: seq<T>)
+predicate uniq<T(==)>(s: seq<T>)
 {
   forall x :: x in s ==> multiset(s)[x] == 1
 }
@@ -117,26 +117,26 @@ method getAllShuffledDataEntriesWithAvoidSet<T(==, 0)>(m_workList: array<T>, avo
   }
 
   if n > 0 {
-//    assert j == k + 1;
-//    assert forall i :: k < i < result.Length ==> result[i] in avoidSet;
-//    assert forall i :: 0 <= i <= k ==> result[i] !in avoidSet;
+    //    assert j == k + 1;
+    //    assert forall i :: k < i < result.Length ==> result[i] in avoidSet;
+    //    assert forall i :: 0 <= i <= k ==> result[i] !in avoidSet;
 
     calc {
-      2 * |avoidSet| - k - 1;
-      <= m_workList.Length - k - 1;
-      == |multiset(result[k+1..])|;
-      <= { suffix_multiset_subset(result[..], k + 1);
-          card_multiset_subset(multiset(result[k+1..]), multiset(avoidSet)); }
-      |avoidSet|;
+       2 * |avoidSet| - k - 1;
+    <= m_workList.Length - k - 1;
+    == |multiset(result[k+1..])|;
+    <= { suffix_multiset_subset(result[..], k + 1);
+         card_multiset_subset(multiset(result[k+1..]), multiset(avoidSet)); }
+       |avoidSet|;
     }
 
-//    assert |avoidSet| <= j; // a contradiction with j + n == |avoidSet| && n > 0
+    //    assert |avoidSet| <= j; // a contradiction with j + n == |avoidSet| && n > 0
   } else {
     // assume multiset(result[..]) == multiset(m_workList[..]);
-  // assume result.Length == m_workList.Length;
-  assert uniq(m_workList[..]);
-  // assume uniq(result[..]);
-  // assume forall i :: 0 <= i < |avoidSet| ==> result[i] !in avoidSet;
+    // assume result.Length == m_workList.Length;
+    assert uniq(m_workList[..]);
+    // assume uniq(result[..]);
+    // assume forall i :: 0 <= i < |avoidSet| ==> result[i] !in avoidSet;
 
   }
 }

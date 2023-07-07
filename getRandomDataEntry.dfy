@@ -15,7 +15,7 @@ method swap<T>(a: array<T>, i: int, j: int)
   a[j] := t;
 }
 
-predicate uniq<T>(s: seq<T>)
+predicate uniq<T(==)>(s: seq<T>)
 {
   forall x :: x in s ==> multiset(s)[x] == 1
 }
@@ -26,10 +26,10 @@ lemma uniq_multiset_subset<T>(s1: seq<T>, s2: seq<T>)
   ensures multiset(s1) <= multiset(s2)
 {
   forall x | x in s1 ensures multiset(s1)[x] <= multiset(s2)[x] {
-//    calc {
-//      1;
-//      multiset(s1)[x];
-//    }
+    //    calc {
+    //      1;
+    //      multiset(s1)[x];
+    //    }
   }
 }
 
@@ -41,10 +41,10 @@ lemma card_multiset_subset<T>(m1: multiset<T>, m2: multiset<T>)
   }
   else {
     var x :| x in m1;
-//    assert x in m2;
-//    assert |m1| == |m1 - multiset{x}| + 1;
-//    assert |m2| == |m2 - multiset{x}| + 1;
-//    assert m1 - multiset{x} <= m2 - multiset{x};
+    //    assert x in m2;
+    //    assert |m1| == |m1 - multiset{x}| + 1;
+    //    assert |m2| == |m2 - multiset{x}| + 1;
+    //    assert m1 - multiset{x} <= m2 - multiset{x};
     card_multiset_subset(m1 - multiset{x}, m2 - multiset{x});
   }
 }
@@ -84,21 +84,21 @@ method getRandomDataEntry<T(==)>(m_workList: array<T>, avoidSet: seq<T>) returns
   }
 
   calc {
-       m_workList.Length;
-    == |multiset(m_workList[..])|;
-    <= { uniq_multiset_subset(m_workList[..], avoidSet);
-        card_multiset_subset(multiset(m_workList[..]), multiset(avoidSet)); }
-       |multiset(avoidSet)|;
-    == |avoidSet|; // a contradiction!
+     m_workList.Length;
+  == |multiset(m_workList[..])|;
+  <= { uniq_multiset_subset(m_workList[..], avoidSet);
+       card_multiset_subset(multiset(m_workList[..]), multiset(avoidSet)); }
+     |multiset(avoidSet)|;
+  == |avoidSet|; // a contradiction!
   }
-//  assert forall x :: x in m_workList[..] ==> x in avoidSet;
-//  assert uniq(m_workList[..]);
-//  multiset_subset(m_workList[..], avoidSet);
-//  assert multiset(m_workList[..]) <= multiset(avoidSet);
-//  card_multiset_subset(multiset(m_workList[..]), multiset(avoidSet));
-//  assert |multiset(m_workList[..])| <= |multiset(avoidSet)|;
-//  assert false;
-  
+  //  assert forall x :: x in m_workList[..] ==> x in avoidSet;
+  //  assert uniq(m_workList[..]);
+  //  multiset_subset(m_workList[..], avoidSet);
+  //  assert multiset(m_workList[..]) <= multiset(avoidSet);
+  //  card_multiset_subset(multiset(m_workList[..]), multiset(avoidSet));
+  //  assert |multiset(m_workList[..])| <= |multiset(avoidSet)|;
+  //  assert false;
+
   return m_workList[0];
 }
 
@@ -118,7 +118,7 @@ method fillWithRandomDataEntries<T(==, 0)>(m_workList: array<T>, n: int, avoidSe
 
   var k := m_workList.Length - 1;
   var r := 0;
-  
+
   while (k >= 0 && r < n)
     invariant k >= -1
     invariant r <= n
@@ -142,42 +142,42 @@ method fillWithRandomDataEntries<T(==, 0)>(m_workList: array<T>, n: int, avoidSe
       assert forall x :: x in out[0..r] ==> x in m_workList[(k + 1)..] && x !in avoidSet;
       // assert multiset(out[0..r]) <= multiset(m_workList[..]);
 
-//      assert e == m_workList[k];
+      //      assert e == m_workList[k];
       suffix_multiset_subset(m_workList[..], k);
       assert multiset(m_workList[k..]) <= multiset(m_workList[..]);
-//      assert uniq(m_workList[k..]);
+      //      assert uniq(m_workList[k..]);
 
       if e in out[0..r] {
         assert e in m_workList[(k + 1)..];
         calc {
-          multiset(m_workList[k..])[e];
+           multiset(m_workList[k..])[e];
           { assert m_workList[k..] == m_workList[k..k+1] + m_workList[k+1..]; }
-          multiset(m_workList[k..k+1] + m_workList[k+1..])[e];
-          >= 2; // a contradiction!
+           multiset(m_workList[k..k+1] + m_workList[k+1..])[e];
+        >= 2; // a contradiction!
         }
       }
-//      assert e !in out[0..r];
-      
+      //      assert e !in out[0..r];
+
       r := r + 1;
     }
-    
+
     k := k - 1;
   }
 
   if r < n {
-//    assert k == -1;
-//    assert forall x :: x in m_workList[..] ==> x in avoidSet || x in out[0..r];
-//    assert forall x :: x in m_workList[..] ==> x in avoidSet + out[0..r];
+    assert k == -1;
+    assert forall x :: x in m_workList[..] ==> x in avoidSet || x in out[0..r];
+    assert forall x :: x in m_workList[..] ==> x in avoidSet + out[0..r];
 
     uniq_multiset_subset(m_workList[..], avoidSet + out[0..r]);
     card_multiset_subset(multiset(m_workList[..]), multiset(avoidSet + out[0..r]));
 
-//    assert false;
+    //    assert false;
   }
   else {
-//    assert r == n;
+    //    assert r == n;
     assert out[0..n] == out[..];
   }
 
-//  assert r == n;
+  //  assert r == n;
 }

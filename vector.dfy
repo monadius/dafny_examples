@@ -27,19 +27,19 @@ module Vec {
   class Vector<T(0)> {
     ghost var Contents: seq<T>;
     ghost var Repr: set<object>;
-    
+
     var objs: array<T>;
     var capacity: int;
     var length: int;
-      
-    predicate Valid()
+
+    ghost predicate Valid()
       reads this, objs
     {
-      this in Repr && objs in Repr && 
-        capacity == objs.Length &&
-        0 <= length <= capacity &&
-        1 <= capacity &&
-        Contents == objs[..length]
+      this in Repr && objs in Repr &&
+      capacity == objs.Length &&
+      0 <= length <= capacity &&
+      1 <= capacity &&
+      Contents == objs[..length]
     }
 
     constructor ()
@@ -112,7 +112,7 @@ module Vec {
         assert capacity > length;
         assert objs.Length == capacity;
         assert objs.Length > length;
-        
+
         objs[length] := obj;
         length := length + 1;
       }

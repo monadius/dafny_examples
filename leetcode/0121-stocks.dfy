@@ -5,7 +5,7 @@
 //   if a >= b then a else b
 // }
 
-function method Max(a: int, b: int): int {
+function Max(a: int, b: int): int {
   if a >= b then a else b
 }
 
