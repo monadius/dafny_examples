@@ -90,10 +90,22 @@ ghost predicate OpNeutral<T(!new)>(f: (T, T) -> T, z: T) {
   forall x :: f(x, z) == f(z, x) == x
 }
 
+lemma FoldlAcc<T(!new)>(f: (T, T) -> T, x: T, y: T, xs: seq<T>)
+  requires OpAssoc(f)
+  ensures Foldl(f, f(x, y), xs) == f(x, Foldl(f, y, xs))
+{
+  if |xs| > 0 {
+    FoldlAcc(f, x, f(y, xs[0]), xs[1..]);
+  }
+}
+
 lemma FoldrEqFoldl<T(!new)>(f: (T, T) -> T, xs: seq<T>, z: T)
   requires OpAssoc(f)
   requires OpNeutral(f, z)
   ensures Foldr(f, xs, z) == Foldl(f, z, xs)
 {
-  assume false;
+  if |xs| > 0 {
+    FoldrEqFoldl(f, xs[1..], z);
+    FoldlAcc(f, xs[0], z, xs[1..]);
+  }
 }

@@ -1,14 +1,14 @@
 module Random {
-  method random(a: int, b: int) returns (r: int)
+  method {:axiom} random(a: int, b: int) returns (r: int)
     requires a <= b
     ensures a <= r <= b
 }
 
-function rand(n: int): int
+function {:axiom} rand(n: int): int
   requires 0 <= n
   ensures 0 <= rand(n) <= n
 
-method rand2(n: int) returns (r: int)
+method {:axiom} rand2(n: int) returns (r: int)
   requires 0 <= n
   ensures 0 <= r <= n
 

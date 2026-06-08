@@ -5,7 +5,7 @@ include "0226-invert-binary-tree.dfy"
 import opened BinaryTree
 
 method isMirror?<T(==)>(t1: Tree<T>, t2: Tree<T>) returns(r: bool)
-ensures r <==> Equal?(t1, Mirror(t2));
+ensures r <==> Equal?(t1, Mirror(t2))
 {
     if (t1.Nil? && t2.Nil?) {
         return true;
@@ -19,7 +19,7 @@ ensures r <==> Equal?(t1, Mirror(t2));
 }
 
 method isSymmetric<T(==)>(root: Tree<T>) returns(r: bool)
-ensures r <==> Equal?(root, Mirror(root));
+ensures r <==> Equal?(root, Mirror(root))
 {
     r := isMirror?(root, root);
 }

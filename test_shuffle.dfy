@@ -1,5 +1,5 @@
 
-method random(a: int, b: int) returns (r: int)
+method {:axiom} random(a: int, b: int) returns (r: int)
   //  requires a <= b
   ensures a <= b ==> a <= r <= b
 
@@ -80,10 +80,10 @@ function set_of_seq<T>(s: seq<T>): set<T>
   set x: T | x in s :: x
 }
 
-lemma in_set_of_seq<T>(x: T, s: seq<T>)
+lemma {:axiom} in_set_of_seq<T>(x: T, s: seq<T>)
   ensures x in s <==> x in set_of_seq(s)
 
-lemma subset_set_of_seq<T>(s1: seq<T>, s2: seq<T>)
+lemma {:axiom} subset_set_of_seq<T>(s1: seq<T>, s2: seq<T>)
   requires set_of_seq(s1) <= set_of_seq(s2)
   ensures forall x :: x in s1 ==> x in s2
 

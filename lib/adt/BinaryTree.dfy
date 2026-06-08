@@ -100,7 +100,12 @@ module BinaryTree {
   lemma NotMemberCount0<T>(t: Tree<T>)
     ensures forall x :: !Member?(x, t) <==> CountBT(x, t) == 0
   {
-
+    match t {
+      case Nil =>
+      case Node(_, l, r) =>
+        NotMemberCount0(l);
+        NotMemberCount0(r);
+    }
   }
 
   lemma NotMemberBTEqNotMemberIOFlatten<T>(t: Tree<T>)

@@ -25,12 +25,12 @@
 
 module Vec {
   class Vector<T(0)> {
-    ghost var Contents: seq<T>;
-    ghost var Repr: set<object>;
+    ghost var Contents: seq<T>
+    ghost var Repr: set<object>
 
-    var objs: array<T>;
-    var capacity: int;
-    var length: int;
+    var objs: array<T>
+    var capacity: int
+    var length: int
 
     ghost predicate Valid()
       reads this, objs

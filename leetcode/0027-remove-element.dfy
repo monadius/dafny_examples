@@ -9,7 +9,8 @@ method RemoveElement(nums: array<int>, val: int) returns (newLength: int)
   while i < nums.Length
     invariant j <= i
     invariant i <= nums.Length
-    invariant old(nums[i..]) == nums[i..];
+    invariant old(nums[i..]) == nums[i..]
+    invariant forall k :: 0 <= k < j ==> nums[k] != val
     invariant multiset(nums[..j]) == multiset(old(nums[..i]))[val := 0]
   {
     if nums[i] != val {

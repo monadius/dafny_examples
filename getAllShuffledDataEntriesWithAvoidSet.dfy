@@ -1,4 +1,4 @@
-method random(a: int, b: int) returns (r: int)
+method {:axiom} random(a: int, b: int) returns (r: int)
   ensures a <= b ==> a <= r <= b
 
 method swap<T>(a: array<T>, i: int, j: int)

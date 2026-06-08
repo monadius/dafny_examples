@@ -1,4 +1,4 @@
-method random(a: int, b: int) returns (r: int)
+method {:axiom} random(a: int, b: int) returns (r: int)
   ensures a <= b ==> a <= r <= b
 
 method swap<T>(a: array<T>, i: int, j: int)
@@ -107,10 +107,10 @@ method fillWithRandomDataEntries<T(==, 0)>(m_workList: array<T>, n: int, avoidSe
   modifies m_workList
   // requires m_workList != null
   requires uniq(m_workList[..])
-  requires |avoidSet| + n <= m_workList.Length;
+  requires |avoidSet| + n <= m_workList.Length
   requires n >= 0
   ensures multiset(m_workList[..]) == old(multiset(m_workList[..]))
-  ensures out.Length == n;
+  ensures out.Length == n
   ensures forall x :: x in out[..] ==> x in m_workList[..] && x !in avoidSet
   ensures uniq(out[..])
 {

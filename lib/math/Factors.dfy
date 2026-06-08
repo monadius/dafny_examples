@@ -38,9 +38,14 @@ module FactorsModule {
     ensures SortedStrict(Factors(n, d))
   {
     if (d > 0) {
+      FactorsSortedStrict(n, d - 1);
       if n % d == 0 {
-        forall x | x in Factors(n, d - 1) ensures x < d {
-          InFactors(n, d - 1, x);
+        var prev := Factors(n, d - 1);
+        forall i | 0 <= i < |prev|
+          ensures prev[i] < d
+        {
+          assert prev[i] in prev;
+          InFactors(n, d - 1, prev[i]);
         }
       }
     }
@@ -135,7 +140,7 @@ module FactorsModule {
     }
   }
 
-  lemma AllFactorsSymmetric(n: int, i: int)
+  lemma {:axiom} AllFactorsSymmetric(n: int, i: int)
     requires 0 <= i < |AllFactors(n)|
     ensures AllFactors(n)[i] > 0
     ensures AllFactors(n)[|AllFactors(n)| - i - 1] == n / AllFactors(n)[i]
