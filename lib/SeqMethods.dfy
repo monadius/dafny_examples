@@ -47,7 +47,7 @@ module SeqMethods {
     return a;
   }
 
-  method FoldlIter<A, B>(f: (A, B) -> A, z: A, xs: seq<B>) returns (r: A) 
+  method FoldlIter<A, B>(f: (A, B) -> A, z: A, xs: seq<B>) returns (r: A)
     ensures r == Foldl'(f, z, xs)
     ensures r == Foldl(f, z, xs)
   {
@@ -112,12 +112,18 @@ module SeqMethods {
       invariant Distinct(xs[start..i])
     {
       if xs[i] in s {
+        assert xs[i] in xs[start..i];
+        var k :| 0 <= k < |xs[start..i]| && xs[start..i][k] == xs[i];
+        assert xs[start..end][k] == xs[i];
+        assert xs[start..end][i - start] == xs[i];
+        assert !Distinct(xs[start..end]);
         return false;
       }
       s := s + {xs[i]};
       i := i + 1;
       assert xs[start..i] == xs[start..i - 1] + [xs[i - 1]];
     }
+    assert xs[start..end] == xs[start..i];
     return true;
   }
 

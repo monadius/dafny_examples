@@ -19,6 +19,7 @@ method RemveDuplicates(nums: array<int>) returns (length: int)
     invariant SortedStrict(nums[..j + 1])
     invariant i < nums.Length ==> forall k :: 0 <= k < i ==> nums[k] <= nums[i]
     invariant forall k :: 0 <= k < i ==> old(nums[k]) in nums[..j + 1]
+    invariant i < nums.Length ==> nums[j] <= nums[i]
   {
     if nums[i] != nums[j] {
       j := j + 1;

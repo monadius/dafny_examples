@@ -2,17 +2,25 @@ module Seq {
 
   /***** Last *****/
 
-  function method Last<T>(xs: seq<T>): T
+  function Last<T>(xs: seq<T>): T
     requires 0 < |xs|
   {
     xs[|xs| - 1]
   }
 
-  function method RemoveLast<T>(xs: seq<T>): seq<T>
+  function RemoveLast<T>(xs: seq<T>): seq<T>
     requires 0 < |xs|
   {
     xs[..|xs| - 1]
   }
+
+  lemma LastAppend<T>(xs: seq<T>, x: T)
+    ensures Last(xs + [x]) == x
+  {}
+
+  lemma RemoveLastAppend<T>(xs: seq<T>, x: T)
+    ensures RemoveLast(xs + [x]) == xs
+  {}
 
   lemma ConcatRemoveLastLast<T>(xs: seq<T>)
     requires 0 < |xs|
@@ -107,10 +115,12 @@ module Seq {
     }
   }
 
+
   lemma FoldlEq<A, B>(f: (A, B) -> A, z: A, xs: seq<B>)
     ensures Foldl'(f, z, xs) == Foldl(f, z, xs)
   {
     if |xs| > 0 {
+      FoldlEq(f, Foldl'(f, z, xs[..|xs| - 1]), xs[1..]);
       calc {
         Foldl(f, z, xs);
         { assert xs == xs[..|xs| - 1] + [xs[|xs| - 1]]; }
@@ -136,6 +146,7 @@ module Seq {
     }
   }
 
+
   function Sum(xs: seq<int>): int {
     Foldl'((a, b) => a + b, 0, xs)
   }
@@ -151,7 +162,7 @@ module Seq {
     }
   }
 
-  // method FilterMethod(xs: seq<int>, f: int -> bool) returns (ys: seq<int>) 
+  // method FilterMethod(xs: seq<int>, f: int -> bool) returns (ys: seq<int>)
   //   ensures forall y :: y in ys ==> f(y)
   //   ensures forall x :: x in xs && f(x) ==> x in ys
   // {
@@ -173,7 +184,7 @@ module Seq {
   //   ensures forall y :: y in Filter(xs, f) ==> f(y)
   //   ensures forall x :: x in xs && f(x) ==> x in Filter(xs, f)
   // {
-  //   if |xs| == 0 then [] 
+  //   if |xs| == 0 then []
   //   else if f(xs[0]) then [xs[0]] + Filter(xs[1..], f)
   //   else Filter(xs[1..], f)
   // }
@@ -188,7 +199,7 @@ module Seq {
     forall i :: 0 <= i < |xs| - 1 ==> xs[i] <= xs[i + 1]
   }
 
-  lemma SortedEq1(xs: seq<int>) 
+  lemma SortedEq1(xs: seq<int>)
     ensures Sorted(xs) <==> Sorted1(xs)
   {
     if |xs| > 0 {
@@ -207,7 +218,7 @@ module Seq {
     forall i :: 0 <= i < |xs| - 1 ==> xs[i] < xs[i + 1]
   }
 
-  lemma SortedStrictEq1(xs: seq<int>) 
+  lemma SortedStrictEq1(xs: seq<int>)
     ensures SortedStrict(xs) <==> SortedStrict1(xs)
   {
     if |xs| > 0 {
@@ -218,21 +229,21 @@ module Seq {
     }
   }
 
-  predicate IsSuffix<T>(xs: seq<T>, ys: seq<T>) {
+  predicate IsSuffix<T(==)>(xs: seq<T>, ys: seq<T>) {
     |xs| <= |ys| && xs == ys[|ys| - |xs|..]
   }
 
   /***** Distinct *****/
 
-  predicate Distinct<T>(xs: seq<T>) {
+  predicate Distinct<T(==)>(xs: seq<T>) {
     forall i, j :: 0 <= i < j < |xs| ==> xs[i] != xs[j]
   }
 
-  predicate DistinctRec<T>(xs: seq<T>) {
+  predicate DistinctRec<T(==)>(xs: seq<T>) {
     if |xs| == 0 then true else xs[0] !in xs[1..] && DistinctRec(xs[1..])
   }
 
-  predicate DistinctRecLast<T>(xs: seq<T>) {
+  predicate DistinctRecLast<T(==)>(xs: seq<T>) {
     if |xs| == 0 then true else Last(xs) !in RemoveLast(xs) && DistinctRecLast(RemoveLast(xs))
   }
 

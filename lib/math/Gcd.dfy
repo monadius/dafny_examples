@@ -1,6 +1,6 @@
 include "Abs.dfy"
 
-function method {:opaque} Gcd(a: int, b: int): int
+function {:opaque} Gcd(a: int, b: int): int
   decreases Abs(b)
 {
   if b != 0 then Gcd(b, a % b) else if a == 0 then 1 else Abs(a)
@@ -17,13 +17,16 @@ lemma GcdPos(a: int, b: int)
   decreases Abs(b)
 {
   reveal Gcd();
+  if b != 0 {
+    GcdPos(b, a % b);
+  }
 }
 
-lemma MulMod(a: int, b: int, c: int)
+lemma {:axiom} MulMod(a: int, b: int, c: int)
   requires c != 0
   ensures (a * b) % c == (a % c) * (b % c) % c
 
-lemma AddMod(a: int, b: int, c: int)
+lemma {:axiom} AddMod(a: int, b: int, c: int)
   requires c != 0
   ensures (a + b) % c == (a % c + b % c) % c
 
@@ -35,6 +38,25 @@ lemma GcdIsDivisor(a: int, b: int)
 {
   if b == 0 {
     reveal Gcd();
+    if a != 0 {
+      assert Gcd(a, 0) == Abs(a);
+      if a > 0 {
+        assert Abs(a) == a;
+        assert a % a == 0;
+      } else {
+        assert a < 0;
+        assert Abs(a) == -a;
+        var x := -a;
+        assert x > 0;
+        assert a + x == 0;
+        DivMod.DivModAdd1(a, x);
+        assert (a + x) % x == a % x;
+        assert (a + x) % x == 0 % x;
+        assert a % x == 0;
+        assert a % Abs(a) == 0;
+      }
+      assert 0 % Abs(a) == 0;
+    }
   } else {
     assert Gcd(a, b) == Gcd(b, a % b) by {
       reveal Gcd();
@@ -55,7 +77,7 @@ lemma GcdIsDivisor(a: int, b: int)
   }
 }
 
-lemma GcdSym(a: int, b: int)
+lemma {:axiom} GcdSym(a: int, b: int)
   ensures Gcd(a, b) == Gcd(b, a)
   decreases Abs(b)
 // {

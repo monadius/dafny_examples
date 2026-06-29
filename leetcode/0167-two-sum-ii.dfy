@@ -3,10 +3,10 @@ include "../lib/Seq.dfy"
 
 import opened Seq
 
-function method TwoSumF(numbers: seq<int>, target: int, left: int, right: int) : (int, int)
-requires 0 <= left <= right < |numbers|;
-requires Sorted(numbers);
-decreases right - left;
+function TwoSumF(numbers: seq<int>, target: int, left: int, right: int) : (int, int)
+requires 0 <= left <= right < |numbers|
+requires Sorted(numbers)
+decreases right - left
 {
     if left == right
     then (-1, -1)
@@ -48,11 +48,11 @@ ensures TwoSumF(numbers, target, left, right).0 == -1 ==>
 // Note that the return indices start with 0 instead of 1, to be consistent
 // with other questions.
 method TwoSum(numbers: seq<int>, target: int) returns (r: (int, int))
-requires Sorted(numbers);
-requires |numbers| >= 2;
-ensures 0 <= r.0 ==> 0 <= r.0 < r.1 < |numbers| && 
-                       numbers[r.0] + numbers[r.1] == target;
-ensures r.0 == -1 ==> forall i, j :: 0 <= i < j < |numbers| ==> numbers[i] + numbers[j] != target;
+requires Sorted(numbers)
+requires |numbers| >= 2
+ensures 0 <= r.0 ==> 0 <= r.0 < r.1 < |numbers| &&
+                       numbers[r.0] + numbers[r.1] == target
+ensures r.0 == -1 ==> forall i, j :: 0 <= i < j < |numbers| ==> numbers[i] + numbers[j] != target
 {
     /*
     var left, right := 0, |numbers|-1;

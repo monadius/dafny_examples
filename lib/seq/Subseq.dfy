@@ -2,7 +2,7 @@ include "../Seq.dfy"
 
 import opened Seq
 
-predicate {:opaque} Subseq<T>(xs: seq<T>, ys: seq<T>) {
+predicate {:opaque} Subseq<T(==)>(xs: seq<T>, ys: seq<T>) {
   if |xs| == 0 then true
   else if |ys| == 0 then false
   else if xs[0] == ys[0] then Subseq(xs[1..], ys[1..])

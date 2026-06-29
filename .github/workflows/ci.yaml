@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   check-proofs:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         test_dir:
@@ -17,11 +17,11 @@ jobs:
             "lib",
           ]
     steps:
-      - uses: actions/checkout@v3
-      - name: install danfy
+      - uses: actions/checkout@v4
+      - name: install dafny
         run: |
-          wget -q https://github.com/dafny-lang/dafny/releases/download/v3.6.0/dafny-3.6.0-x64-ubuntu-16.04.zip
-          unzip -qq dafny-3.6.0-x64-ubuntu-16.04.zip
+          wget -q https://github.com/dafny-lang/dafny/releases/download/v4.11.0/dafny-4.11.0-x64-ubuntu-22.04.zip
+          unzip -qq dafny-4.11.0-x64-ubuntu-22.04.zip
           echo "dafny=$PWD/dafny/dafny" >> $GITHUB_ENV
       - name: test
         env:
@@ -35,7 +35,7 @@ jobs:
             then
               echo "Ignore working in progress proof: "$b
             else
-              $DAFNY $b /compile:0
+              $DAFNY verify "$b"
             fi
             echo "================================================"
           done
